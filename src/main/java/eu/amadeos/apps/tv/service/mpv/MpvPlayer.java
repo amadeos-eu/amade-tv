@@ -30,7 +30,7 @@ public final class MpvPlayer implements AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(MpvPlayer.class);
     private static final String OVERRIDE_PREFIX = "mpv.";
     // reply_userdata of the observed properties
-    static final long TIME = 1, PAUSE = 3, EOF = 6, TITLE = 7, VOLUME = 8, MUTE = 9, SUB_VISIBLE = 10;
+    static final long TIME = 1, PAUSE = 3, EOF = 6, TITLE = 7, VOLUME = 8, MUTE = 9, SUB_VISIBLE = 10, IDLE = 11;
 
     private final LibMpv mpv;
     private final String unavailableReason;
@@ -93,6 +93,7 @@ public final class MpvPlayer implements AutoCloseable {
         if (!System.getProperty("os.name", "").startsWith("Windows")) {
             Native.load("c", LibMpv.LibC.class).setlocale(LibMpv.LibC.LC_NUMERIC, "C");
         }
+        XErrors.remember();
         Pointer h = mpv.mpv_create();
         if (h == null) throw new IllegalStateException("mpv_create failed");
         handle = h;
@@ -124,6 +125,7 @@ public final class MpvPlayer implements AutoCloseable {
         mpv.mpv_observe_property(h, VOLUME, "volume", LibMpv.FORMAT_DOUBLE);
         mpv.mpv_observe_property(h, MUTE, "mute", LibMpv.FORMAT_FLAG);
         mpv.mpv_observe_property(h, SUB_VISIBLE, "sub-visibility", LibMpv.FORMAT_FLAG);
+        mpv.mpv_observe_property(h, IDLE, "idle-active", LibMpv.FORMAT_FLAG);
         running = true;
         events = Thread.ofPlatform().daemon().name("mpv-events").start(this::eventLoop);
         LOG.info("libmpv {} attached to window 0x{}", apiVersion(), Long.toHexString(windowId));
@@ -209,6 +211,8 @@ public final class MpvPlayer implements AutoCloseable {
         }
         handle = null;
         mpv.mpv_terminate_destroy(h);
+        // Before the windows are disposed: they get BadWindow errors, which Xlib's default handler ends the program on.
+        XErrors.restore();
     }
 
     // ---- events ----------------------------------------------------------------------------------
@@ -238,6 +242,8 @@ public final class MpvPlayer implements AutoCloseable {
             });
             case MpvEvent.PropertyChange p -> {
                 if (p.id() == PAUSE) pauseChanged(Boolean.TRUE.equals(p.value()));
+                // mpv goes idle after closing the video output, which reset the X error handler.
+                if (p.id() == IDLE && Boolean.TRUE.equals(p.value())) XErrors.restore();
                 update(st -> propertyChanged(st, p));
             }
             case MpvEvent.Log l -> log(l);
