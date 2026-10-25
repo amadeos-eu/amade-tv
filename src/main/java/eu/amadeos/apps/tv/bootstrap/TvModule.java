@@ -5,6 +5,7 @@ import com.google.inject.Provides;
 import com.google.inject.Scopes;
 import com.google.inject.Singleton;
 import eu.amadeos.apps.tv.repository.ChannelCatalog;
+import eu.amadeos.apps.tv.service.net.KodinerdsList;
 import eu.amadeos.apps.tv.repository.ReminderStore;
 import eu.amadeos.apps.tv.repository.TvPreferences;
 import eu.amadeos.apps.tv.service.guide.ArdProgramSource;
@@ -58,6 +59,12 @@ public final class TvModule extends AbstractModule {
     @Singleton
     ReminderStore reminders(AppDirectories dirs, Clock clock) {
         return new ReminderStore(dirs.config(), clock.instant());
+    }
+
+    @Provides
+    @Singleton
+    KodinerdsList kodinerds(Web web) {
+        return new KodinerdsList(web);
     }
 
     @Provides

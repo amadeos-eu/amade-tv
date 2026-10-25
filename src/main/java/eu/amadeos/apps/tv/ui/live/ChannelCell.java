@@ -102,7 +102,8 @@ final class ChannelCell extends JPanel implements ListCellRenderer<Channel> {
                 g.fillRect(bx + 1, h / 2 + 6, (int) ((bw - 2) * b.get().progressAt(now)), 5);
             }
         } else {
-            g.drawString(tr("live.cell.no-info"), x, h / 2 + 13);
+            String none = channel.guide() == Channel.GuideSourceId.NONE ? "live.cell.no-guide" : "live.cell.no-info";
+            g.drawString(clip(g, tr(none), w - x - 8), x, h / 2 + 13);
         }
         g.dispose();
     }

@@ -16,8 +16,11 @@ programs, downloads and a watch-later list.
 | **Guide** | all channels on a time line, one day at a time | *Now*, *Prime Time 20:15*, previous/next day, search; a program's details with *Watch Live* and *Remind Me* |
 
 Reminders pop up when a program starts and offer to switch to it. The channel list has the 11 main
-channels; *Channels → Show Regional Channels* adds the ARD regional channels and the Bundestag
-channels. Texts in English, German, French, Spanish and Italian, following the desktop language.
+channels; four groups in the *Channels* menu add more, each switched on by itself: the ARD regional
+channels and the Bundestag channels, channels from Austria and Switzerland, international channels
+(news and culture from Europe and beyond), and free German private channels. Only the main and
+regional channels have a program guide; the others are live streams only. A few international
+channels stream through YouTube and are shown only when `yt-dlp` is installed. Texts in English, German, French, Spanish and Italian, following the desktop language.
 
 ## Data sources
 
@@ -26,15 +29,15 @@ channels. Texts in English, German, French, Spanish and Italian, following the d
 | Stream addresses, program running now | [Zapp](https://github.com/mediathekview/zapp-backend) API of the MediathekView project | `api.zapp.mediathekview.de/v1/channelInfoList`, `/shows/<channel>`; the built-in list in `channels.json` is the fallback |
 | ARD channels' schedule | ARD program API | `programm-api.ard.de/program/api/program?day=` |
 | ZDF channels' schedule (ZDF, 3sat, ARTE, phoenix, KiKA, ZDFneo, ZDFinfo) | the ZDF EPG behind zdf.de | GraphQL, with the API token read from the zdf.de live TV page |
-| Channel logos | [Kodinerds IPTV lists](https://github.com/jnk22/kodinerds-iptv) | downloaded on first use, never shipped in the package |
+| Channel logos, stream addresses of the extra groups | [Kodinerds IPTV lists](https://github.com/jnk22/kodinerds-iptv) | `iptv/clean/clean_tv.m3u`; logos downloaded on first use, never shipped in the package |
 
 Schedules are cached in `~/.cache/amadeos/tv/guide/` (6 hours; past days stay until they are a week
 old). Settings and reminders are in `~/.config/amadeos/tv/`.
 
 Only freely available streams are used. Some programs are only licensed for Germany (sometimes
 Austria and Switzerland); outside, the broadcaster shows a notice or the stream fails, and amade-tv
-says so. It never tries to get around such limits. Private channels are not included: their streams
-are encrypted (DRM) or paid.
+says so. It never tries to get around such limits. Private channels whose streams are encrypted (DRM)
+or paid are not included; only private channels that stream freely are.
 
 None of these interfaces is a documented public API, so a broadcaster can change them at any time.
 When a source fails, the guide shows *No program from ... right now* and the rest keeps working.
@@ -47,12 +50,12 @@ which Video uses too.
 | Package | Content |
 |---------|---------|
 | `bootstrap` | `AmadeTvApplication` (entry point), `TvModule` |
-| `domain` | `Channel`, `Broadcast`, `Schedule` (immutable, per channel), `Reminder`, `PlayerState` |
-| `repository` | `ChannelCatalog` (`channels.json` + stream addresses from Zapp), `TvPreferences`, `ReminderStore` |
+| `domain` | `Channel`, `ChannelGroup`, `Broadcast`, `Schedule` (immutable, per channel), `Reminder`, `PlayerState` |
+| `repository` | `ChannelCatalog` (`channels.json` + stream addresses from Zapp and Kodinerds), `TvPreferences`, `ReminderStore` |
 | `service.guide` | `GuideService` (cache, loading, listeners), `ArdProgramSource`, `ZdfEpgSource`, `ZappService` |
 | `service.logo` | `LogoCache`: downloads, turns, crops and scales the channel logos |
 | `service.mpv` | `MpvPlayer`: the player state on top of amade-commons' `Mpv`: live time shift, volume, tracks |
-| `service.net` | `Web` and its `HttpWeb` implementation (the tests use a fake) |
+| `service.net` | `Web` and its `HttpWeb` implementation (the tests use a fake), `KodinerdsList` |
 | `ui.live` | `LivePage`, `ChannelCell`, `LiveControls`, `VideoCanvas` |
 | `ui.guide` | `GuidePage`, `GuideGrid`, `TimelineLayout` |
 | `ui.main` | `MainWindow` (menus, sidebar, pages), `MainPresenter`, `ChannelTile` |

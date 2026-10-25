@@ -1,5 +1,5 @@
 {
-  "comment": "Live channels of the public broadcasters. Stream addresses as published by the broadcasters (the same as the Zapp service of the MediathekView project, which refreshes them); logos are downloaded on first use from the Kodinerds IPTV lists and are not part of amade-tv.",
+  "comment": "Live channels. The German public ones: stream addresses as published by the broadcasters (the same as the Zapp service of the MediathekView project, which refreshes them). The groups atch (Austria and Switzerland), international and more (further free German channels) come from the clean lists of Kodinerds IPTV (free-to-air streams); 'kodinerds' is the tvg-id there, by which the addresses are refreshed, and 'needs' names a program the stream needs (yt-dlp for YouTube). Logos are downloaded on first use from the Kodinerds lists and are not part of amade-tv.",
   "channels": [
     {
       "id": "das_erste",
@@ -126,7 +126,7 @@
         "BR Fernsehen",
         "br"
       ],
-      "regional": true
+      "group": "regional"
     },
     {
       "id": "br_nord",
@@ -137,7 +137,7 @@
       "guideNames": [
         "BR Nord"
       ],
-      "regional": true
+      "group": "regional"
     },
     {
       "id": "hr",
@@ -150,7 +150,7 @@
         "hr-fernsehen",
         "hr fernsehen"
       ],
-      "regional": true
+      "group": "regional"
     },
     {
       "id": "mdr_sachsen",
@@ -163,7 +163,7 @@
         "MDR Fernsehen",
         "mdr"
       ],
-      "regional": true
+      "group": "regional"
     },
     {
       "id": "mdr_sachsen_anhalt",
@@ -174,7 +174,7 @@
       "guideNames": [
         "MDR Sachsen-Anhalt"
       ],
-      "regional": true
+      "group": "regional"
     },
     {
       "id": "mdr_thueringen",
@@ -185,7 +185,7 @@
       "guideNames": [
         "MDR Thüringen"
       ],
-      "regional": true
+      "group": "regional"
     },
     {
       "id": "ndr_hh",
@@ -198,7 +198,7 @@
         "NDR Fernsehen",
         "ndr"
       ],
-      "regional": true
+      "group": "regional"
     },
     {
       "id": "ndr_mv",
@@ -209,7 +209,7 @@
       "guideNames": [
         "NDR Mecklenburg-Vorpommern"
       ],
-      "regional": true
+      "group": "regional"
     },
     {
       "id": "ndr_nds",
@@ -220,7 +220,7 @@
       "guideNames": [
         "NDR Niedersachsen"
       ],
-      "regional": true
+      "group": "regional"
     },
     {
       "id": "ndr_sh",
@@ -231,7 +231,7 @@
       "guideNames": [
         "NDR Schleswig-Holstein"
       ],
-      "regional": true
+      "group": "regional"
     },
     {
       "id": "rbb_berlin",
@@ -243,7 +243,7 @@
         "rbb",
         "rbb Fernsehen"
       ],
-      "regional": true
+      "group": "regional"
     },
     {
       "id": "rbb_brandenburg",
@@ -254,7 +254,7 @@
       "guideNames": [
         "rbb Brandenburg"
       ],
-      "regional": true
+      "group": "regional"
     },
     {
       "id": "rb",
@@ -266,7 +266,7 @@
         "Radio Bremen TV",
         "rb"
       ],
-      "regional": true
+      "group": "regional"
     },
     {
       "id": "sr",
@@ -278,7 +278,7 @@
         "sr",
         "SR Fernsehen"
       ],
-      "regional": true
+      "group": "regional"
     },
     {
       "id": "swr_bw",
@@ -292,7 +292,7 @@
         "swr",
         "SWR BW"
       ],
-      "regional": true
+      "group": "regional"
     },
     {
       "id": "swr_rp",
@@ -303,7 +303,7 @@
       "guideNames": [
         "SWR RP"
       ],
-      "regional": true
+      "group": "regional"
     },
     {
       "id": "wdr",
@@ -315,7 +315,7 @@
         "wdr",
         "WDR Fernsehen"
       ],
-      "regional": true
+      "group": "regional"
     },
     {
       "id": "parlamentsfernsehen_1",
@@ -323,7 +323,7 @@
       "stream": "https://bttv-live-z.r53.cdn.tv1.eu/13014bundestag-hk1/_definst_/live/video/hk1_de.smil/playlist.m3u8",
       "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/parlamentsfernsehen.png",
       "guide": "NONE",
-      "regional": true
+      "group": "regional"
     },
     {
       "id": "parlamentsfernsehen_2",
@@ -331,7 +331,870 @@
       "stream": "https://bttv-live-z.r53.cdn.tv1.eu/13014bundestag-hk2/_definst_/live/video/hk2_de.smil/playlist.m3u8",
       "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/parlamentsfernsehen.png",
       "guide": "NONE",
-      "regional": true
+      "group": "regional"
+    },
+    {
+      "id": "servustv_at",
+      "name": "ServusTV (AT)",
+      "stream": "https://freqsyndlin.servustv.com/771_playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/servustvhd.png",
+      "guide": "NONE",
+      "group": "atch",
+      "kodinerds": "ServusTV.at"
+    },
+    {
+      "id": "kronetv_at",
+      "name": "Krone.TV",
+      "stream": "https://kronetv.mdn.ors.at/live/eds/kronetv_hd/hls3_nodrm/kronetv_hd-nodrm.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/kronetv.png",
+      "guide": "NONE",
+      "group": "atch",
+      "kodinerds": "KroneTV.at"
+    },
+    {
+      "id": "okto_at",
+      "name": "Okto",
+      "stream": "https://cdn3.wowza.com/1/MHFtazJReW5rOFhP/N2NWNDZ2/hls/live/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/okto.png",
+      "guide": "NONE",
+      "group": "atch",
+      "kodinerds": "OKTO.at"
+    },
+    {
+      "id": "orf1_at",
+      "name": "ORF eins",
+      "stream": "https://orf1.mdn.ors.at/out/u/orf1/q6a/manifest_6.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/orf1hd.png",
+      "guide": "NONE",
+      "group": "atch",
+      "kodinerds": "ORF1.at"
+    },
+    {
+      "id": "orf2_at",
+      "name": "ORF 2",
+      "stream": "https://orf2.mdn.ors.at/out/u/orf2/qxb/manifest.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/orf2hd.png",
+      "guide": "NONE",
+      "group": "atch",
+      "kodinerds": "ORF2.at"
+    },
+    {
+      "id": "orf3_at",
+      "name": "ORF III",
+      "stream": "https://orf3.mdn.ors.at/out/u/orf3/q6a/manifest_6.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/orf3hd.png",
+      "guide": "NONE",
+      "group": "atch",
+      "kodinerds": "ORF3.at"
+    },
+    {
+      "id": "orfsport_at",
+      "name": "ORF SPORT +",
+      "stream": "https://orfs.mdn.ors.at/out/u/orfs/q6a/manifest_6.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/orfsportplushd.png",
+      "guide": "NONE",
+      "group": "atch",
+      "kodinerds": "ORFSport.at"
+    },
+    {
+      "id": "dorf_tv",
+      "name": "dorf tv",
+      "stream": "https://stream.openplayout.org/hls/dorf_high/index.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/dorftv.png",
+      "guide": "NONE",
+      "group": "atch"
+    },
+    {
+      "id": "re_eins_tv",
+      "name": "RE eins TV",
+      "stream": "http://www.reeins.tv:1935/live/re1/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/reeins.png",
+      "guide": "NONE",
+      "group": "atch"
+    },
+    {
+      "id": "tirol_tv",
+      "name": "Tirol TV",
+      "stream": "https://streaming14.huberwebmedia.at/LiveApp/streams/livestream.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/tiroltv.png",
+      "guide": "NONE",
+      "group": "atch"
+    },
+    {
+      "id": "oe24tv_at",
+      "name": "oe24 TV",
+      "stream": "https://oe24.mdn.ors.at/live/eds/oe24tv_hd/hls_nodrm/oe24tv_hd-nodrm.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/oe24tv.png",
+      "guide": "NONE",
+      "group": "atch",
+      "kodinerds": "OE24TV.at"
+    },
+    {
+      "id": "m4tv",
+      "name": "M4TV",
+      "stream": "https://5a32c05065c79.streamlock.net/live/stream/chunklist_w286280757.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/m4tv.png",
+      "guide": "NONE",
+      "group": "atch"
+    },
+    {
+      "id": "rtv_at",
+      "name": "RTV (AT)",
+      "stream": "http://iptv.rtv-ooe.at/stream.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/rtvat.png",
+      "guide": "NONE",
+      "group": "atch"
+    },
+    {
+      "id": "w24_at",
+      "name": "W24 TV",
+      "stream": "https://ms01.w24.at/W24/smil:liveevent.smil/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/w24.png",
+      "guide": "NONE",
+      "group": "atch",
+      "kodinerds": "W24.at"
+    },
+    {
+      "id": "kronehit_tv",
+      "name": "Kronehit TV",
+      "stream": "https://bitcdn-kronehit.bitmovin.com/v2/hls/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/kronehittv.png",
+      "guide": "NONE",
+      "group": "atch"
+    },
+    {
+      "id": "melodie_tv",
+      "name": "Melodie TV",
+      "stream": "https://live20.bozztv.com/akamaissh101/ssh101/melodietvlive/chunks.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/melodietv.png",
+      "guide": "NONE",
+      "group": "atch"
+    },
+    {
+      "id": "telezuri_ch",
+      "name": "TeleZüri",
+      "stream": "https://cdnapisec.kaltura.com/p/1719221/sp/171922100/playManifest/entryId/1_se36k3uk/protocol/https/format/applehttp/flavorIds/1_i4zc9zv3,1_2vzxm8zl,1_yjohpwzj/a.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/telezueri.png",
+      "guide": "NONE",
+      "group": "atch",
+      "kodinerds": "TeleZuri.ch"
+    },
+    {
+      "id": "telebarn_hd",
+      "name": "TeleBärn",
+      "stream": "https://cdnapisec.kaltura.com/p/1719221/sp/171922100/playManifest/entryId/1_obr1n222/protocol/https/format/applehttp/flavorIds/1_ilmyd94i,1_ndclh5za,1_y4atcpo4/a.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/telebaern.png",
+      "guide": "NONE",
+      "group": "atch"
+    },
+    {
+      "id": "telem1_ch",
+      "name": "Tele M1",
+      "stream": "https://cdnapisec.kaltura.com/p/1719221/sp/171922100/playManifest/entryId/1_ljzy3evp/protocol/https/format/applehttp/flavorIds/1_c3sydgl5,1_a4l5it9e,1_sc0f201h/a.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/telem1.png",
+      "guide": "NONE",
+      "group": "atch",
+      "kodinerds": "TeleM1.ch"
+    },
+    {
+      "id": "tvo_ch",
+      "name": "TVO (CH)",
+      "stream": "https://s3.welocal.world/tvo/media/447348/videos/hls.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/tvo_ch.png",
+      "guide": "NONE",
+      "group": "atch",
+      "kodinerds": "TVO.ch"
+    },
+    {
+      "id": "telebielingue_ch",
+      "name": "TeleBielingue",
+      "stream": "https://edge21.vedge.infomaniak.com/livecast/ik:backup_5/manifest.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/telebielingue.png",
+      "guide": "NONE",
+      "group": "atch",
+      "kodinerds": "TeleBielingue.ch"
+    },
+    {
+      "id": "tvm3_ch",
+      "name": "TVM3",
+      "stream": "https://edge16.vedge.infomaniak.com/livecast/tvm3/manifest.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/tvm3.png",
+      "guide": "NONE",
+      "group": "atch",
+      "kodinerds": "TVM3.ch"
+    },
+    {
+      "id": "telebasel",
+      "name": "Telebasel",
+      "stream": "https://tb-simplex-cdn-live.akamaized.net/smsla-o-1080-720-360/ngrp:simplex-live-srt-49166.stream_all/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/telebasel.png",
+      "guide": "NONE",
+      "group": "atch"
+    },
+    {
+      "id": "deutschewellede_de",
+      "name": "Deutsche Welle",
+      "stream": "https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/deutschewelle.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "DeutscheWelleDE.de"
+    },
+    {
+      "id": "deutschewelleen_de",
+      "name": "Deutsche Welle (EN)",
+      "stream": "https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/deutschewelle.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "DeutscheWelleEN.de"
+    },
+    {
+      "id": "peer_tv",
+      "name": "Peer TV Südtirol",
+      "stream": "https://iptv.peer.biz/live/peertv.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/peer-tv-suedtirol.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "peer.tv"
+    },
+    {
+      "id": "skynewsextra_au",
+      "name": "Sky News Extra",
+      "stream": "https://skynewsau-live.akamaized.net/hls/live/2002690/skynewsau-extra2/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/skynewsextra.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "SkyNewsExtra.au"
+    },
+    {
+      "id": "activatv_es",
+      "name": "Activa TV",
+      "stream": "https://streamtv.mediasector.es/hls/activatv/index.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/activatv.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "ActivaTV.es"
+    },
+    {
+      "id": "deutschewellees_de",
+      "name": "Deutsche Welle (ES)",
+      "stream": "https://dwamdstream104.akamaized.net/hls/live/2015530/dwstream104/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/deutschewelle.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "DeutscheWelleES.de"
+    },
+    {
+      "id": "chch_cdn",
+      "name": "CHCH",
+      "stream": "https://bcovlive-a.akamaihd.net/45a29af6ec4341539ddd3dd505c4b669/us-west-2/5644964886001/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/chch.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "CHCH.cdn"
+    },
+    {
+      "id": "tvnz_1",
+      "name": "TVNZ 1",
+      "stream": "https://tvnzioslive04-i.akamaihd.net/hls/live/267188/1924997895001/channel1/masterR_5.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/tvnz1.png",
+      "guide": "NONE",
+      "group": "international"
+    },
+    {
+      "id": "tvnz_2",
+      "name": "TVNZ 2",
+      "stream": "https://tvnzioslive05-i.akamaihd.net/hls/live/267189/1924997895001/channel2/masterR_55.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/tvnz2.png",
+      "guide": "NONE",
+      "group": "international"
+    },
+    {
+      "id": "three",
+      "name": "Three",
+      "stream": "http://mediaworks-i.akamaihd.net/hls/live/220435/3812193411001/3news_live/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/three.png",
+      "guide": "NONE",
+      "group": "international"
+    },
+    {
+      "id": "arte_fr",
+      "name": "ARTE (FR)",
+      "stream": "https://artesimulcast.akamaized.net/hls/live/2031003/artelive_fr/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/artehd.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "ARTE.fr"
+    },
+    {
+      "id": "france24_fr",
+      "name": "France 24",
+      "stream": "https://www.youtube.com/c/FRANCE24/live",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/france24.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "France24.fr",
+      "needs": "yt-dlp"
+    },
+    {
+      "id": "bfmtv_fr",
+      "name": "BFMTV",
+      "stream": "https://live-cdn-stream-euw1.bfmtv.bct.nextradiotv.com/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/bfmtv.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "BFMTV.fr"
+    },
+    {
+      "id": "xite",
+      "name": "XITE",
+      "stream": "https://ms2.mx-cd.net/tv/226-1855782/XITE_NL.smil/chunklist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/xite.png",
+      "guide": "NONE",
+      "group": "international"
+    },
+    {
+      "id": "tv538_nl",
+      "name": "TV 538",
+      "stream": "https://radio538.prd1.talpatvcdn.nl/22e9bbf9616547d7bc162c993009c533/index.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/tv538.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "TV538.nl"
+    },
+    {
+      "id": "sdf",
+      "name": "SDF",
+      "stream": "https://livestream.goinfo.it/SDFLive/sdfros/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/sdf.png",
+      "guide": "NONE",
+      "group": "international"
+    },
+    {
+      "id": "m2o_tv",
+      "name": "m2o Tv",
+      "stream": "https://4c4b867c89244861ac216426883d1ad0.msvdn.net/live/S62628868/uhdWBlkC1AoO/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/m2otv.png",
+      "guide": "NONE",
+      "group": "international"
+    },
+    {
+      "id": "rainews_it",
+      "name": "Rai News 24",
+      "stream": "https://8e7439fdb1694c8da3a0fd63e4dda518.msvdn.net/rainews1/hls/playlist_mo.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/rainews24.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "RaiNews.it"
+    },
+    {
+      "id": "realitateatv_ro",
+      "name": "Realitatea TV",
+      "stream": "http://livestream.realitatea.net/livestream/liverealitatea.stream/chunklist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/realitateatv.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "RealitateaTV.ro"
+    },
+    {
+      "id": "romaniatv_ro",
+      "name": "Romania TV",
+      "stream": "http://ppext.arktv.ro/hls/channel6/bitrate4.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/romaniatv.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "RomaniaTV.ro"
+    },
+    {
+      "id": "trtworld_nws",
+      "name": "TRT World",
+      "stream": "https://tv-trtworld.medya.trt.com.tr/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/trtworld.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "TRTworld.nws"
+    },
+    {
+      "id": "tvrain_ru",
+      "name": "TV Rain (Doschd)",
+      "stream": "https://wl.tvrain.tv/transcode/ngrp:ses_all/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/tvrain.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "tvrain.ru"
+    },
+    {
+      "id": "metrotv",
+      "name": "MetroTV",
+      "stream": "http://edge.metrotvnews.com:1935/live-edge/smil:metro.smil/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/metrotv.png",
+      "guide": "NONE",
+      "group": "international"
+    },
+    {
+      "id": "nhk_world_tv",
+      "name": "NHK WORLD TV",
+      "stream": "https://media-osa.hls.nhkworld.jp/hls/w/live/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/nhkworldtv.png",
+      "guide": "NONE",
+      "group": "international"
+    },
+    {
+      "id": "aljazeeraarabe_nws",
+      "name": "Al Jazeera Arabic",
+      "stream": "https://live-hls-web-aja.getaj.net/AJA/index.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/aljazeera.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "AlJazeeraArabe.nws"
+    },
+    {
+      "id": "aljazeera_nws",
+      "name": "Al Jazeera English",
+      "stream": "https://live-hls-web-aje-gcp.thehlive.com/AJE/index.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/aljazeeraenglish.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "AlJazeera.nws"
+    },
+    {
+      "id": "dubaione_net",
+      "name": "Dubai One",
+      "stream": "http://dminnvll.cdn.mangomolo.com/dubaione/smil:dubaione.stream.smil/chunklist_b1500000.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/dubaione.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "DubaiOne.net"
+    },
+    {
+      "id": "kvf",
+      "name": "KVF",
+      "stream": "https://w1.kringvarp.fo/uttanlands/_definst_/smil:uttanlands.smil/chunklist_w121411721_b5000000_slfao.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/kvf.png",
+      "guide": "NONE",
+      "group": "international"
+    },
+    {
+      "id": "albuk_tv",
+      "name": "ALBUK TV",
+      "stream": "http://albuk.dyndns.tv:1935/albuk/albuk.stream/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/albuktv.png",
+      "guide": "NONE",
+      "group": "international"
+    },
+    {
+      "id": "rtenewsnow_ie",
+      "name": "RTÉ News Now",
+      "stream": "http://wmsrtsp1.rte.ie/live/android.sdp/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/rtenewsnow.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "RTENewsNow.ie"
+    },
+    {
+      "id": "mello_tv",
+      "name": "Mello TV",
+      "stream": "https://wowzaprod133-i.akamaihd.net/hls/live/577385/a1e0ad3f/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/mellotv.png",
+      "guide": "NONE",
+      "group": "international"
+    },
+    {
+      "id": "channel_newsasia",
+      "name": "Channel NewsAsia",
+      "stream": "https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/channelnewsasia.png",
+      "guide": "NONE",
+      "group": "international"
+    },
+    {
+      "id": "arirangtv_kr",
+      "name": "Arirang TV",
+      "stream": "https://amdlive-ch01-ctnd-com.akamaized.net/arirang_1ch/smil:arirang_1ch.smil/chunklist_b2256000_sleng.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/arirangtv.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "ArirangTv.kr"
+    },
+    {
+      "id": "yle1_fi",
+      "name": "Yle TV1",
+      "stream": "https://yletvworld.akamaized.net/hls/live/622540/yletv1w/index.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/yletv1.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "yle1.fi"
+    },
+    {
+      "id": "yle2_fi",
+      "name": "Yle TV2",
+      "stream": "https://yletvworld.akamaized.net/hls/live/622541/yletv2w/index.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/yletv2.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "yle2.fi"
+    },
+    {
+      "id": "yleteemafem_fi",
+      "name": "Yle Teema & Fem",
+      "stream": "https://yletvworld.akamaized.net/hls/live/622547/yletvteemafemw/index.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/yleteemafem.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "yleteemafem.fi"
+    },
+    {
+      "id": "taivastv7_fi",
+      "name": "Taivas TV7",
+      "stream": "https://vod.tv7.fi/tv7-fi/_definst_/smil:tv7-fi.smil/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/taivastv7.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "taivastv7.fi"
+    },
+    {
+      "id": "alfatv_fi",
+      "name": "Alfa TV",
+      "stream": "https://alfatv.digitacdn.net/live/_definst_/alfatv/amlst:alfatv.amlst/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/alfatv.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "alfatv.fi"
+    },
+    {
+      "id": "4fun_tv",
+      "name": "4 FunTV",
+      "stream": "https://stream.4fun.tv:8888/hls/4f_high/index.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/4funtv.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "4fun.tv"
+    },
+    {
+      "id": "sferatv_pl",
+      "name": "SferaTV",
+      "stream": "http://stream.sferatv.pl:1935/sferalive/smil:sferalive.smil/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/sferatv.png",
+      "guide": "NONE",
+      "group": "international",
+      "kodinerds": "sferatv.pl"
+    },
+    {
+      "id": "df1_de",
+      "name": "DF1",
+      "stream": "https://d287776cjxyfeq.cloudfront.net/out/v1/08823cd7fba74508a5a577fd51dc41f6/index.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/df1.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "DF1.de"
+    },
+    {
+      "id": "weltderwunder_de",
+      "name": "Welt der Wunder",
+      "stream": "https://wdw.iptv-playoutcenter.de/wdw/wdw1/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/weltderwunder.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "WeltderWunder.de"
+    },
+    {
+      "id": "welt_de",
+      "name": "WELT",
+      "stream": "https://welt.personalstream.tv/v1/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/welt.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "WELT.de"
+    },
+    {
+      "id": "euronews_com",
+      "name": "euronews deutsch",
+      "stream": "https://www.youtube.com/euronewsde/live",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/euronews.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "euronews.com",
+      "needs": "yt-dlp"
+    },
+    {
+      "id": "bild_de",
+      "name": "Bild",
+      "stream": "https://bild.personalstream.tv/v1/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/BildTV.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "BILD.de"
+    },
+    {
+      "id": "autobild_de",
+      "name": "AUTO BILD TV",
+      "stream": "https://auto-bild.personalstream.tv/v1/bildde/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/AutoBildTV.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "AUTOBILD.de"
+    },
+    {
+      "id": "red_bull_tv",
+      "name": "Red Bull TV",
+      "stream": "https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/redbulltv.png",
+      "guide": "NONE",
+      "group": "more"
+    },
+    {
+      "id": "anixe_de",
+      "name": "ANIXE",
+      "stream": "https://ma.anixa.tv/clips/stream/anixehd/index.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/anixehd.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "Anixe.de"
+    },
+    {
+      "id": "morethansports_de",
+      "name": "More than Sports TV",
+      "stream": "https://mts1.iptv-playoutcenter.de/mts/mts-web/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/morethansports.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "morethansports.de"
+    },
+    {
+      "id": "daznfastplus_de",
+      "name": "DAZN FAST+",
+      "stream": "https://d2606t9eyamzl3.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-ia6qw6xh7nd2w-ssai-prd/out/v1/64dc66ee167d48db833377ab85217dfd/DAZN-FAST-HLS-CMAF-DRM/index.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/daznfastplus.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "daznfastplus.de"
+    },
+    {
+      "id": "dokusat_de",
+      "name": "Dokusat",
+      "stream": "https://muc3.iptv-playoutcenter.de/dokusat/dokusat1/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/dokusat.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "Dokusat.de"
+    },
+    {
+      "id": "ric_de",
+      "name": "RiC",
+      "stream": "https://www.youtube.com/embed/vRgu-o0chwI",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/ric.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "RiC.de",
+      "needs": "yt-dlp"
+    },
+    {
+      "id": "lilo_tv",
+      "name": "Lilo.TV",
+      "stream": "https://lilo.iptv-playoutcenter.de/lilo/lilo-sat1/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/lilotv.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "lilo.tv"
+    },
+    {
+      "id": "nickelodeon_de",
+      "name": "Nickelodeon",
+      "stream": "https://0d26a00dfbb1.airspace-cdn.cbsivideo.com/nick1999/master/nick1999.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/nickelodeon.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "Nickelodeon.de"
+    },
+    {
+      "id": "oe3_at",
+      "name": "Ö3-VisualRadio",
+      "stream": "https://studiocam-oe3.mdn.ors.at/out/u/studiocam_oe3/q6a/manifest.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/radio/hitradiooe3.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "oe3.at"
+    },
+    {
+      "id": "swr3_de",
+      "name": "SWR3-VisualRadio",
+      "stream": "https://swrswr3vr-hls.akamaized.net/hls/live/2018683/swr3vr/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/radio/swr3.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "swr3.de"
+    },
+    {
+      "id": "panoramabilder",
+      "name": "Panoramabilder",
+      "stream": "https://brevent.akamaized.net/hls/live/2028222/event_05/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/panoramabilder.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "panoramabilder"
+    },
+    {
+      "id": "dasding_de",
+      "name": "DASDING-VisualRadio",
+      "stream": "https://swrdasdingvr-hls.akamaized.net/hls/live/2018681/dasdingvr/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/radio/dasding.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "Dasding.de"
+    },
+    {
+      "id": "ndr1radiomv_de",
+      "name": "NDR 1 Radio MV-VisualRadio",
+      "stream": "https://ndrvisualradiohls.akamaized.net/hls/live/2018951/ndrvr_mv_ndr1/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/radio/ndr1radiomv.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "NDR1RadioMV.de"
+    },
+    {
+      "id": "deluxemusic_de",
+      "name": "DELUXE MUSIC",
+      "stream": "https://sdn-global-live-streaming-packager-cache.3qsdn.com/13456/13456_264_live.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/deluxemusic.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "DeLuxeMusic.de"
+    },
+    {
+      "id": "deluxemusicdance_de",
+      "name": "DELUXE MUSIC DANCE",
+      "stream": "https://sdn-global-live-streaming-packager-cache.3qsdn.com/64733/64733_264_live.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/deluxemusicdance.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "DeLuxeMusicDance.de"
+    },
+    {
+      "id": "deluxemusicrap_de",
+      "name": "DELUXE MUSIC RAP",
+      "stream": "https://sdn-global-live-streaming-packager-cache.3qsdn.com/65183/65183_264_live.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/deluxemusicrap.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "DeLuxeMusicRap.de"
+    },
+    {
+      "id": "folxtv_de",
+      "name": "Folx TV",
+      "stream": "https://cdne.folxplay.tv/fxt/streams/ch-4/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/folxtv.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "FolxTV.de"
+    },
+    {
+      "id": "one1musictv_de",
+      "name": "One 1 Music TV",
+      "stream": "https://cdne.folxplay.tv/fxt/streams/ch-3/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/one1musictv.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "One1MusicTV.de"
+    },
+    {
+      "id": "zwei2musictv_de",
+      "name": "Zwei 2 Music TV",
+      "stream": "https://cdne.folxplay.tv/fxt/streams/ch-2/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/zwei2musictv.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "Zwei2MusicTV.de"
+    },
+    {
+      "id": "deutschesmusikfernsehen_de",
+      "name": "Deutsches Musik Fernsehen",
+      "stream": "https://d-m-f.iptv-playoutcenter.de/dmf/dmf1/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/deutschesmusikfernsehen.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "DeutschesMusikFernsehen.de"
+    },
+    {
+      "id": "schlagerdeluxe_de",
+      "name": "Schlager Deluxe",
+      "stream": "https://sdn-global-live-streaming-packager-cache.3qsdn.com/26658/26658_264_live.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/schlagerdeluxe.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "SchlagerDeluxe.de"
+    },
+    {
+      "id": "bibeltv_de",
+      "name": "Bibel TV",
+      "stream": "https://bibeltv01.iptv-playoutcenter.de/bibeltv01/bibeltv01.stream_all/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/bibeltv.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "BibelTV.de"
+    },
+    {
+      "id": "bibeltvimpuls_de",
+      "name": "Bibel TV Impuls",
+      "stream": "https://bibeltv02.iptv-playoutcenter.de/bibeltv02/bibeltv02.stream_all/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/bibeltv.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "BibelTVImpuls.de"
+    },
+    {
+      "id": "bibeltvmusik_de",
+      "name": "Bibel TV Musik",
+      "stream": "http://bibeltv03.iptv-playoutcenter.de/bibeltv03/bibeltv03.stream_all/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/bibeltv.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "BibelTVMusik.de"
+    },
+    {
+      "id": "ktv_de",
+      "name": "K-TV",
+      "stream": "https://streamcdnf34-a19bf41486254a3485a864c8b0c14fe1.msvdn.net/live/S28743697/LpD0q2aoyujI/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/ktv.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "KTV.de"
+    },
+    {
+      "id": "ewtn_de",
+      "name": "EWTN katholisches TV",
+      "stream": "https://1775071782.rsc.cdn77.org/1775071782/tracks-v1a1/mono.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/ewtnkatholischestv.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "EWTN.de"
+    },
+    {
+      "id": "erfeins_de",
+      "name": "ERF 1",
+      "stream": "https://bcovlive-a.akamaihd.net/b9f68a14d78144abb5b883067a0cdb84/eu-central-1/6194387526001/profile_0/chunklist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/erf1.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "ERFeins.de"
+    },
+    {
+      "id": "sportbild_de",
+      "name": "SPORT BILD TV",
+      "stream": "https://sport-bild.personalstream.tv/v1/bildde/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/sportbildtv.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "SPORTBILD.de"
+    },
+    {
+      "id": "wir24_tv",
+      "name": "Wir24TV",
+      "stream": "https://edge14.vedge.infomaniak.com/livecast/ik:wir24tv_hms/manifest.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/wirtv24.png",
+      "guide": "NONE",
+      "group": "more",
+      "kodinerds": "wir24.tv"
     }
   ]
 }

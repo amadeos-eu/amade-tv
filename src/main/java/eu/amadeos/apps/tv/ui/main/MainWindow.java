@@ -1,5 +1,6 @@
 package eu.amadeos.apps.tv.ui.main;
 
+import eu.amadeos.apps.tv.domain.ChannelGroup;
 import static eu.amadeos.commons.i18n.Texts.tr;
 
 import eu.amadeos.apps.tv.ui.guide.GuidePage;
@@ -7,6 +8,8 @@ import eu.amadeos.apps.tv.ui.live.LivePage;
 import eu.amadeos.commons.i18n.Mnemonics;
 
 import javax.swing.*;
+import java.util.EnumMap;
+import java.util.Map;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -24,7 +27,8 @@ final class MainWindow extends JFrame {
     final GuidePage guide;
     final JToggleButton liveButton = new JToggleButton();
     final JToggleButton guideButton = new JToggleButton();
-    final JCheckBoxMenuItem regional = new JCheckBoxMenuItem();
+    /** The groups of channels besides the main ones, each switched on with its menu item. */
+    final Map<ChannelGroup, JCheckBoxMenuItem> groups = new EnumMap<>(ChannelGroup.class);
     final JLabel sideStatus = new JLabel(" ");
     final JPanel sidebar = new JPanel();
     private final CardLayout cards = new CardLayout();
@@ -66,9 +70,15 @@ final class MainWindow extends JFrame {
         channels.add(item("menu.previous-channel", KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, KeyEvent.CTRL_DOWN_MASK), () -> p.switchChannel(-1)));
         channels.add(item("menu.next-channel", KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, KeyEvent.CTRL_DOWN_MASK), () -> p.switchChannel(1)));
         channels.addSeparator();
-        Mnemonics.apply(regional, tr("menu.regional"));
-        regional.addActionListener(e -> p.setShowRegional(regional.isSelected()));
-        channels.add(regional);
+        for (ChannelGroup g : ChannelGroup.values()) {
+            if (g == ChannelGroup.MAIN) continue;
+            JCheckBoxMenuItem item = new JCheckBoxMenuItem();
+            Mnemonics.apply(item, tr("menu.group." + g.key()));
+            item.addActionListener(e -> p.setGroup(g, item.isSelected()));
+            groups.put(g, item);
+            channels.add(item);
+        }
+        channels.addSeparator();
         channels.add(item("menu.refresh", KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0), p::refresh));
         JMenu help = menu("menu.help");
         help.add(item("menu.about", null, p::about));
