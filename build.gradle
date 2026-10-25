@@ -1,0 +1,206 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'eu.amadeos'
+// CI computes the version from the Conventional Commits since the last release tag and passes it as
+// -PappVersion (datazuul/amadeos-ci scripts/next-version.sh); a build without it is a local development build.
+version = findProperty('appVersion') ?: '0.0.0-dev.0'
+// Debian sorts 1.1.0~dev.57 before 1.1.0 (with - it would sort after it).
+def debVersion = version.toString().replace('-', '~')
+
+def mainClassName = 'eu.amadeos.apps.tv.bootstrap.AmadeTvApplication'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+application {
+    mainClass = mainClassName
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    // Theme, Motif look, start-up, languages and XDG helpers shared by all amadeOS applications.
+    // With ../amade-commons checked out, settings.gradle builds that checkout instead (composite build).
+    implementation 'com.github.datazuul:amade-commons:v1.0.0'
+
+    // libmpv (and through it FFmpeg) via JNA: no JNI code to build.
+    implementation 'net.java.dev.jna:jna:5.14.0'
+
+    runtimeOnly 'ch.qos.logback:logback-classic:1.5.18'
+
+    testImplementation platform('org.junit:junit-bom:5.10.2')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+    // Tests compare English texts, whatever the language of the build machine.
+    systemProperty 'user.language', 'en'
+    systemProperty 'user.country', 'US'
+}
+
+// mpv options and the JNA library path for `gradle run`, e.g. ./gradlew run -Dmpv.ao=null (see MpvPlayer).
+tasks.named('run') {
+    systemProperties System.properties.findAll { k, v -> k.toString().startsWith('mpv.') || k == 'jna.library.path' }
+}
+
+jar {
+    archiveBaseName = 'amade-tv'
+    manifest {
+        attributes(
+            'Main-Class': mainClassName,
+            'Implementation-Title': 'amade-tv',
+            'Implementation-Version': project.version,
+            'Enable-Native-Access': 'ALL-UNNAMED'
+        )
+    }
+    dependsOn 'mergeServiceFiles'
+    from {
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it).matching { exclude 'META-INF/services/**' }
+        }
+    }
+    from(layout.buildDirectory.dir('merged-services'))
+    // Signed dependency jars would otherwise invalidate the fat jar.
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+// Service registrations (e.g. Logback's SLF4J provider) would overwrite each other in a fat jar, so merge them.
+tasks.register('mergeServiceFiles') {
+    def outputDir = layout.buildDirectory.dir('merged-services')
+    outputs.dir outputDir
+    inputs.files configurations.runtimeClasspath
+    doLast {
+        def merged = [:].withDefault { new LinkedHashSet<String>() }
+        configurations.runtimeClasspath.each { file ->
+            if (!file.name.endsWith('.jar')) return
+            def zip = new java.util.zip.ZipFile(file)
+            try {
+                zip.entries().each { entry ->
+                    if (!entry.directory && entry.name.startsWith('META-INF/services/')) {
+                        zip.getInputStream(entry).getText('UTF-8').readLines()
+                                .collect { it.replaceAll('#.*', '').trim() }
+                                .findAll { it }
+                                .each { merged[entry.name] << it }
+                    }
+                }
+            } finally {
+                zip.close()
+            }
+        }
+        def dir = outputDir.get().asFile
+        project.delete(dir)
+        merged.each { name, lines ->
+            def target = new File(dir, name)
+            target.parentFile.mkdirs()
+            target.text = lines.join('\n') + '\n'
+        }
+    }
+}
+
+tasks.register('deb') {
+    dependsOn jar
+    description = 'Builds a standard Debian (.deb) package for amade-tv'
+    group = 'distribution'
+
+    doLast {
+        def buildDirFile = layout.buildDirectory.get().asFile
+        def stagingDir = new File(buildDirFile, 'deb-staging')
+        delete(stagingDir)
+
+        def optDir = new File(stagingDir, 'opt/amade-tv')
+        def binDir = new File(stagingDir, 'usr/bin')
+        def appDir = new File(stagingDir, 'usr/share/applications')
+        def iconDir = new File(stagingDir, 'usr/share/icons/hicolor/48x48/apps')
+        def docDir = new File(stagingDir, 'usr/share/doc/amade-tv')
+        def debianDir = new File(stagingDir, 'DEBIAN')
+        def distDir = new File(buildDirFile, 'distributions')
+        [optDir, binDir, appDir, iconDir, docDir, debianDir, distDir]*.mkdirs()
+
+        copy {
+            from jar.archiveFile
+            into optDir
+            rename { 'amade-tv.jar' }
+        }
+
+        def launcher = new File(binDir, 'amade-tv')
+        launcher.text = """#!/bin/sh
+exec /usr/bin/java --enable-native-access=ALL-UNNAMED -jar /opt/amade-tv/amade-tv.jar "\$@"
+"""
+        launcher.setExecutable(true, false)
+
+        copy {
+            from 'packaging/amade-tv.desktop'
+            into appDir
+        }
+        // AppStream metadata: name, description and screenshot for amadeOS Software (and a repository's
+        // appstream-generator).
+        copy {
+            from 'packaging/eu.amadeos.apps.tv.metainfo.xml'
+            into new File(stagingDir, "usr/share/metainfo")
+        }
+        copy {
+            from 'src/main/resources/icons/amade-tv.png'
+            into iconDir
+        }
+        copy {
+            from 'LICENSE'
+            into docDir
+            rename { 'copyright' }
+        }
+
+        new File(debianDir, 'control').text = """Package: amade-tv
+Version: ${debVersion}
+Section: video
+Priority: optional
+Architecture: all
+Depends: openjdk-25-jre | java-runtime (>= 25), libmpv2
+Maintainer: amadeOS Project <developers@datazuul.com>
+Description: Live TV and program guide for amadeOS
+ Watches the live streams of the German-language public broadcasters
+ (Das Erste, ZDF, ARTE, 3sat, KiKA, phoenix, the ARD regional channels
+ and more) with today's schedule, a program guide for all channels and
+ reminders. Playback is done by libmpv. Only freely available streams
+ are used; nothing is unlocked that a broadcaster limits to a country.
+"""
+
+        def debFile = new File(distDir, "amade-tv_${debVersion}_all.deb")
+        def process = new ProcessBuilder('dpkg-deb', '--root-owner-group', '--build',
+                stagingDir.absolutePath, debFile.absolutePath)
+                .redirectErrorStream(true)
+                .start()
+        process.inputStream.eachLine { println it }
+        if (process.waitFor() != 0) {
+            throw new GradleException('dpkg-deb failed')
+        }
+        println "[deb] Created ${debFile.absolutePath}"
+    }
+}
+
+tasks.register('installToAmadeOs') {
+    dependsOn 'deb'
+    description = 'Builds and drops the .deb package into ../amadeos/config/packages.chroot/'
+    group = 'distribution'
+
+    doLast {
+        def targetDir = file('../amadeos/config/packages.chroot')
+        targetDir.mkdirs()
+        def debFile = new File(layout.buildDirectory.get().asFile, "distributions/amade-tv_${debVersion}_all.deb")
+        copy {
+            from debFile
+            into targetDir
+        }
+        println "[installToAmadeOs] Copied ${debFile.name} to ${targetDir.absolutePath}"
+    }
+}
