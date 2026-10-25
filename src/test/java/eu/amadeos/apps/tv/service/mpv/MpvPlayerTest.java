@@ -1,7 +1,14 @@
 package eu.amadeos.apps.tv.service.mpv;
 
 import eu.amadeos.apps.tv.domain.PlayerState;
+import eu.amadeos.commons.mpv.Mpv;
+import eu.amadeos.commons.mpv.MpvEvent;
 import org.junit.jupiter.api.Test;
+
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneOffset;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,20 +46,48 @@ class MpvPlayerTest {
     }
 
     @Test
-    void recognisesTheSoftwareRendererWarning() {
-        assertTrue(MpvPlayer.isSoftwareRenderer(new MpvEvent.Log("warn", "vo/gpu/opengl",
-                "Suspected software renderer or indirect context.")));
-        assertFalse(MpvPlayer.isSoftwareRenderer(new MpvEvent.Log("warn", "vo/gpu/vaapi", "libva: vaGetDriverNames() failed")));
+    void aPauseLetsThePictureFallBehindLive() {
+        MutableClock clock = new MutableClock();
+        MpvPlayer player = new MpvPlayer(new Mpv(), clock);
+        player.handle(new MpvEvent.FileLoaded());
+        player.handle(new MpvEvent.PropertyChange(MpvPlayer.PAUSE, "pause", true));
+        clock.advance(Duration.ofSeconds(90));
+        player.handle(new MpvEvent.PropertyChange(MpvPlayer.PAUSE, "pause", false));
+        assertEquals(90, player.state().behind(), 0.001);
+        assertFalse(player.state().isLive());
+        // Forward never goes past live; without libmpv the command is dropped, the state still follows.
+        player.seekBy(600);
+        assertEquals(0, player.state().behind(), 0.001);
+        assertTrue(player.state().isLive());
     }
 
     @Test
-    void systemPropertiesOverrideTheDefaults() {
-        System.setProperty("mpv.gpu-context", "auto");
-        try {
-            assertEquals("auto", MpvPlayer.overrides().get("gpu-context"));
-        } finally {
-            System.clearProperty("mpv.gpu-context");
+    void anErrorBecomesTheFailedState() {
+        MpvPlayer player = new MpvPlayer(new Mpv(), Clock.systemUTC());
+        player.handle(new MpvEvent.EndFile(MpvEvent.END_ERROR, -13));
+        assertEquals(PlayerState.Status.FAILED, player.state().status());
+    }
+
+    private static final class MutableClock extends Clock {
+        private Instant now = Instant.parse("2026-10-25T20:00:00Z");
+
+        void advance(Duration d) {
+            now = now.plus(d);
         }
-        assertFalse(MpvPlayer.overrides().containsKey("gpu-context"));
+
+        @Override
+        public Instant instant() {
+            return now;
+        }
+
+        @Override
+        public java.time.ZoneId getZone() {
+            return ZoneOffset.UTC;
+        }
+
+        @Override
+        public Clock withZone(java.time.ZoneId zone) {
+            return this;
+        }
     }
 }

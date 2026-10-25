@@ -41,8 +41,8 @@ When a source fails, the guide shows *No program from ... right now* and the res
 
 ## Architecture
 
-Java 25, Swing, Guice, JNA; the player is the one of
-[amade-video](https://github.com/datazuul/amade-video).
+Java 25, Swing, Guice, JNA; libmpv is driven by `Mpv` of amade-commons (package `eu.amadeos.commons.mpv`),
+which Video uses too.
 
 | Package | Content |
 |---------|---------|
@@ -51,7 +51,7 @@ Java 25, Swing, Guice, JNA; the player is the one of
 | `repository` | `ChannelCatalog` (`channels.json` + stream addresses from Zapp), `TvPreferences`, `ReminderStore` |
 | `service.guide` | `GuideService` (cache, loading, listeners), `ArdProgramSource`, `ZdfEpgSource`, `ZappService` |
 | `service.logo` | `LogoCache`: downloads, turns, crops and scales the channel logos |
-| `service.mpv` | `MpvPlayer`: libmpv via JNA, live time shift, tracks; `LibMpv`, `MpvEvent`, `VideoOutput` |
+| `service.mpv` | `MpvPlayer`: the player state on top of amade-commons' `Mpv`: live time shift, volume, tracks |
 | `service.net` | `Web` and its `HttpWeb` implementation (the tests use a fake) |
 | `ui.live` | `LivePage`, `ChannelCell`, `LiveControls`, `VideoCanvas` |
 | `ui.guide` | `GuidePage`, `GuideGrid`, `TimelineLayout` |
@@ -79,7 +79,7 @@ drawer.
 
 1. Live and Guide (this version)
 2. Library: the on-demand programs of the broadcasters, search, downloads, watch later
-3. Handbook chapters; the mpv binding moves to amade-commons
+3. Handbook chapters (the mpv binding is in amade-commons now)
 
 ## License
 
