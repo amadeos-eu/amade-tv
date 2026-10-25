@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- AppStream metadata of amade-tv, installed as /usr/share/metainfo/eu.amadeos.apps.tv.metainfo.xml.
+     amadeOS Software shows it for the installed package; a repository's appstream-generator reads it too. -->
+<component type="desktop-application">
+  <id>eu.amadeos.apps.tv</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>EUPL-1.2</project_license>
+
+  <name>amadeOS TV</name>
+  <name xml:lang="de">amadeOS Fernsehen</name>
+  <name xml:lang="fr">Télévision amadeOS</name>
+  <name xml:lang="es">Televisión de amadeOS</name>
+  <name xml:lang="it">Televisione di amadeOS</name>
+
+  <summary>Watches the live TV of the public broadcasters, with a program guide</summary>
+  <summary xml:lang="de">Live-Fernsehen der öffentlich-rechtlichen Sender mit Programmführer</summary>
+  <summary xml:lang="fr">La télévision en direct des chaînes publiques, avec un guide des programmes</summary>
+  <summary xml:lang="es">Televisión en directo de las cadenas públicas, con guía de programación</summary>
+  <summary xml:lang="it">La televisione in diretta delle emittenti pubbliche, con la guida ai programmi</summary>
+
+  <description>
+    <p>amade-tv plays the live streams of the German public broadcasters (Das Erste, ZDF, ARTE, 3sat, the regional channels and more) and shows what is on now and later. Playback is done by libmpv, embedded in a window in the Motif style of the desktop.</p>
+    <p xml:lang="de">amade-tv spielt die Live-Streams der öffentlich-rechtlichen Sender (Das Erste, ZDF, ARTE, 3sat, die Dritten und weitere) und zeigt, was jetzt und später läuft. Die Wiedergabe übernimmt libmpv, eingebettet in ein Fenster im Motif-Stil des Desktops.</p>
+    <p xml:lang="fr">amade-tv lit les flux en direct des chaînes publiques allemandes (Das Erste, ZDF, ARTE, 3sat, les chaînes régionales et d'autres) et montre ce qui passe maintenant et plus tard. La lecture est assurée par libmpv, intégrée dans une fenêtre au style Motif du bureau.</p>
+    <p xml:lang="es">amade-tv reproduce las emisiones en directo de las cadenas públicas alemanas (Das Erste, ZDF, ARTE, 3sat, las cadenas regionales y otras) y muestra lo que se emite ahora y más tarde. La reproducción la hace libmpv, integrada en una ventana con el estilo Motif del escritorio.</p>
+    <p xml:lang="it">amade-tv riproduce gli streaming in diretta delle emittenti pubbliche tedesche (Das Erste, ZDF, ARTE, 3sat, i canali regionali e altri) e mostra cosa va in onda ora e più tardi. La riproduzione è affidata a libmpv, integrata in una finestra nello stile Motif del desktop.</p>
+    <ul>
+      <li>Channel list with logos and the program running now</li>
+      <li xml:lang="de">Senderliste mit Logos und der laufenden Sendung</li>
+      <li xml:lang="fr">Liste des chaînes avec logos et l'émission en cours</li>
+      <li xml:lang="es">Lista de cadenas con logotipos y el programa en emisión</li>
+      <li xml:lang="it">Elenco dei canali con loghi e il programma in onda</li>
+      <li>Pause and go back up to 10 minutes, then return to live</li>
+      <li xml:lang="de">Anhalten und bis zu 10 Minuten zurückspringen, dann zurück zu Live</li>
+      <li xml:lang="fr">Pause et retour en arrière jusqu'à 10 minutes, puis retour au direct</li>
+      <li xml:lang="es">Pausa y retroceso de hasta 10 minutos, y vuelta al directo</li>
+      <li xml:lang="it">Pausa e ritorno indietro fino a 10 minuti, poi di nuovo in diretta</li>
+      <li>Program guide for several days with search and reminders</li>
+      <li xml:lang="de">Programmführer für mehrere Tage mit Suche und Erinnerungen</li>
+      <li xml:lang="fr">Guide des programmes sur plusieurs jours avec recherche et rappels</li>
+      <li xml:lang="es">Guía de programación de varios días con búsqueda y recordatorios</li>
+      <li xml:lang="it">Guida ai programmi di più giorni con ricerca e promemoria</li>
+    </ul>
+  </description>
+
+  <launchable type="desktop-id">amade-tv.desktop</launchable>
+  <icon type="stock">amade-tv</icon>
+  <categories>
+    <category>AudioVideo</category>
+    <category>Video</category>
+    <category>TV</category>
+    <category>Player</category>
+  </categories>
+
+  <url type="homepage">https://github.com/datazuul/amade-tv</url>
+  <url type="bugtracker">https://github.com/datazuul/amade-tv/issues</url>
+  <developer id="eu.amadeos">
+    <name>amadeOS Project</name>
+  </developer>
+
+  <provides>
+    <binary>amade-tv</binary>
+  </provides>
+  <content_rating type="oars-1.1"/>
+</component>
