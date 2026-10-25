@@ -1,0 +1,337 @@
+{
+  "comment": "Live channels of the public broadcasters. Stream addresses as published by the broadcasters (the same as the Zapp service of the MediathekView project, which refreshes them); logos are downloaded on first use from the Kodinerds IPTV lists and are not part of amade-tv.",
+  "channels": [
+    {
+      "id": "das_erste",
+      "name": "Das Erste",
+      "stream": "https://daserste-live.ard-mcdn.de/daserste/live/hls/de/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/daserste.png",
+      "guide": "ARD",
+      "guideNames": [
+        "daserste"
+      ]
+    },
+    {
+      "id": "zdf",
+      "name": "ZDF",
+      "stream": "https://zdf-hls-15.akamaized.net/hls/live/2016498/de/high/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/zdf.png",
+      "guide": "ZDF",
+      "guideNames": [
+        "ZDF"
+      ]
+    },
+    {
+      "id": "arte",
+      "name": "ARTE",
+      "stream": "https://artesimulcast.akamaized.net/hls/live/2030993/artelive_de/index.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/arte.png",
+      "logoTurn": 90,
+      "guide": "ZDF",
+      "guideNames": [
+        "arte"
+      ]
+    },
+    {
+      "id": "dreisat",
+      "name": "3sat",
+      "stream": "https://zdf-hls-18.akamaized.net/hls/live/2016501/dach/high/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/3sat.png",
+      "guide": "ZDF",
+      "guideNames": [
+        "3sat"
+      ]
+    },
+    {
+      "id": "phoenix",
+      "name": "phoenix",
+      "stream": "https://zdf-hls-19.akamaized.net/hls/live/2016502/de/high/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/phoenix.png",
+      "guide": "ZDF",
+      "guideNames": [
+        "PHOENIX"
+      ]
+    },
+    {
+      "id": "tagesschau24",
+      "name": "tagesschau24",
+      "stream": "https://tagesschau.akamaized.net/hls/live/2020117/tagesschau/tagesschau_3/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/tagesschau24.png",
+      "guide": "ARD",
+      "guideNames": [
+        "tagesschau24"
+      ]
+    },
+    {
+      "id": "zdf_neo",
+      "name": "ZDFneo",
+      "stream": "https://zdf-hls-16.akamaized.net/hls/live/2016499/de/high/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/zdfneohd.png",
+      "guide": "ZDF",
+      "guideNames": [
+        "ZDFneo"
+      ]
+    },
+    {
+      "id": "zdf_info",
+      "name": "ZDFinfo",
+      "stream": "https://zdf-hls-17.akamaized.net/hls/live/2016500/de/high/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/zdfinfohd.png",
+      "guide": "ZDF",
+      "guideNames": [
+        "ZDFinfo"
+      ]
+    },
+    {
+      "id": "kika",
+      "name": "KiKA",
+      "stream": "https://kikageohls.akamaized.net/hls/live/2022693/livetvkika_de/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/kika.png",
+      "guide": "ZDF",
+      "guideNames": [
+        "KI.KA",
+        "KiKA"
+      ]
+    },
+    {
+      "id": "ard_alpha",
+      "name": "ARD-alpha",
+      "stream": "https://mcdn.br.de/br/fs/ard_alpha/hls/de/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/ardalpha.png",
+      "guide": "ARD",
+      "guideNames": [
+        "alpha",
+        "ard-alpha",
+        "BR alpha"
+      ]
+    },
+    {
+      "id": "one",
+      "name": "ONE",
+      "stream": "https://mcdn-one.ard.de/ardone/hls/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/one.png",
+      "guide": "ARD",
+      "guideNames": [
+        "one"
+      ]
+    },
+    {
+      "id": "br_sued",
+      "name": "BR Süd",
+      "stream": "https://mcdn.br.de/br/fs/bfs_sued/hls/de/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/br.png",
+      "guide": "ARD",
+      "guideNames": [
+        "BR",
+        "BR Fernsehen",
+        "br"
+      ],
+      "regional": true
+    },
+    {
+      "id": "br_nord",
+      "name": "BR Nord",
+      "stream": "https://mcdn.br.de/br/fs/bfs_nord/hls/de/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/br.png",
+      "guide": "ARD",
+      "guideNames": [
+        "BR Nord"
+      ],
+      "regional": true
+    },
+    {
+      "id": "hr",
+      "name": "HR",
+      "stream": "https://hr-live.ard-mcdn.de/hr/live/hls/de/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/hr.png",
+      "guide": "ARD",
+      "guideNames": [
+        "hr",
+        "hr-fernsehen",
+        "hr fernsehen"
+      ],
+      "regional": true
+    },
+    {
+      "id": "mdr_sachsen",
+      "name": "MDR Sachsen",
+      "stream": "https://mdrtvsnhls.akamaized.net/hls/live/2016928/mdrtvsn/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/mdr.png",
+      "guide": "ARD",
+      "guideNames": [
+        "MDR",
+        "MDR Fernsehen",
+        "mdr"
+      ],
+      "regional": true
+    },
+    {
+      "id": "mdr_sachsen_anhalt",
+      "name": "MDR Sachsen-Anhalt",
+      "stream": "https://mdrtvsahls.akamaized.net/hls/live/2016879/mdrtvsa/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/mdr.png",
+      "guide": "ARD",
+      "guideNames": [
+        "MDR Sachsen-Anhalt"
+      ],
+      "regional": true
+    },
+    {
+      "id": "mdr_thueringen",
+      "name": "MDR Thüringen",
+      "stream": "https://mdrtvthhls.akamaized.net/hls/live/2016880/mdrtvth/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/mdr.png",
+      "guide": "ARD",
+      "guideNames": [
+        "MDR Thüringen"
+      ],
+      "regional": true
+    },
+    {
+      "id": "ndr_hh",
+      "name": "NDR Hamburg",
+      "stream": "https://mcdn.ndr.de/ndr/hls/ndr_fs/ndr_hh/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/ndr.png",
+      "guide": "ARD",
+      "guideNames": [
+        "NDR",
+        "NDR Fernsehen",
+        "ndr"
+      ],
+      "regional": true
+    },
+    {
+      "id": "ndr_mv",
+      "name": "NDR Mecklenburg-Vorpommern",
+      "stream": "https://mcdn.ndr.de/ndr/hls/ndr_fs/ndr_mv/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/ndr.png",
+      "guide": "ARD",
+      "guideNames": [
+        "NDR Mecklenburg-Vorpommern"
+      ],
+      "regional": true
+    },
+    {
+      "id": "ndr_nds",
+      "name": "NDR Niedersachsen",
+      "stream": "https://mcdn.ndr.de/ndr/hls/ndr_fs/ndr_nds/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/ndr.png",
+      "guide": "ARD",
+      "guideNames": [
+        "NDR Niedersachsen"
+      ],
+      "regional": true
+    },
+    {
+      "id": "ndr_sh",
+      "name": "NDR Schleswig-Holstein",
+      "stream": "https://mcdn.ndr.de/ndr/hls/ndr_fs/ndr_sh/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/ndr.png",
+      "guide": "ARD",
+      "guideNames": [
+        "NDR Schleswig-Holstein"
+      ],
+      "regional": true
+    },
+    {
+      "id": "rbb_berlin",
+      "name": "rbb Berlin",
+      "stream": "https://rbb-hls-berlin.akamaized.net/hls/live/2017824/rbb_berlin/index.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/rbb.png",
+      "guide": "ARD",
+      "guideNames": [
+        "rbb",
+        "rbb Fernsehen"
+      ],
+      "regional": true
+    },
+    {
+      "id": "rbb_brandenburg",
+      "name": "rbb Brandenburg",
+      "stream": "https://rbb-hls-brandenburg.akamaized.net/hls/live/2017825/rbb_brandenburg/index.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/rbb.png",
+      "guide": "ARD",
+      "guideNames": [
+        "rbb Brandenburg"
+      ],
+      "regional": true
+    },
+    {
+      "id": "rb",
+      "name": "Radio Bremen",
+      "stream": "https://rbhlslive.akamaized.net/hls/live/2020435/rbfs/master.m3u8",
+      "guide": "ARD",
+      "guideNames": [
+        "radiobremen",
+        "Radio Bremen TV",
+        "rb"
+      ],
+      "regional": true
+    },
+    {
+      "id": "sr",
+      "name": "SR",
+      "stream": "https://srfs.akamaized.net/hls/live/689649/srfsgeo/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/srhd.png",
+      "guide": "ARD",
+      "guideNames": [
+        "sr",
+        "SR Fernsehen"
+      ],
+      "regional": true
+    },
+    {
+      "id": "swr_bw",
+      "name": "SWR Baden-Württemberg",
+      "stream": "https://swrbwd-hls.akamaized.net/hls/live/2018672/swrbwd/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/swr.png",
+      "guide": "ARD",
+      "guideNames": [
+        "SWR",
+        "SWR Fernsehen",
+        "swr",
+        "SWR BW"
+      ],
+      "regional": true
+    },
+    {
+      "id": "swr_rp",
+      "name": "SWR Rheinland-Pfalz",
+      "stream": "https://swrrpd-hls.akamaized.net/hls/live/2018676/swrrpd/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/swr.png",
+      "guide": "ARD",
+      "guideNames": [
+        "SWR RP"
+      ],
+      "regional": true
+    },
+    {
+      "id": "wdr",
+      "name": "WDR",
+      "stream": "https://wdr-live.ard-mcdn.de/wdr/live/hls/de/master.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/wdr.png",
+      "guide": "ARD",
+      "guideNames": [
+        "wdr",
+        "WDR Fernsehen"
+      ],
+      "regional": true
+    },
+    {
+      "id": "parlamentsfernsehen_1",
+      "name": "Parlamentsfernsehen 1",
+      "stream": "https://bttv-live-z.r53.cdn.tv1.eu/13014bundestag-hk1/_definst_/live/video/hk1_de.smil/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/parlamentsfernsehen.png",
+      "guide": "NONE",
+      "regional": true
+    },
+    {
+      "id": "parlamentsfernsehen_2",
+      "name": "Parlamentsfernsehen 2",
+      "stream": "https://bttv-live-z.r53.cdn.tv1.eu/13014bundestag-hk2/_definst_/live/video/hk2_de.smil/playlist.m3u8",
+      "logo": "https://raw.githubusercontent.com/jnk22/kodinerds-iptv/master/logos/tv/parlamentsfernsehen.png",
+      "guide": "NONE",
+      "regional": true
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "links": {"self": {"type": "program", "title": "Programm", "href": "https://programm-api.ard.de/program/api/program?day=2026-10-25"}},
+  "timeSlots": [{"title": "Vormittag", "heightUnits": 4, "startDate": "2026-10-25T05:00:00+01:00", "endDate": "2026-10-25T12:00:00+01:00"}],
+  "channels": [
+    {
+      "id": "daserste",
+      "crid": "Y3JpZDovL2Rhc2Vyc3RlLmRlL2xpdmUvY2xpcC9hYmNhMDdhMy0zNDc2LTQ4NTEtYjE2Mi1mZGU4ZjY0NmQ0YzQ",
+      "publicationService": {"name": "Das Erste", "partner": "das_erste"},
+      "timeSlots": [
+        [
+          {"id": "a1", "type": "broadcast", "title": "Tagesschau", "coreTitle": "Tagesschau", "subline": "",
+           "synopsis": "Die Nachrichten des Tages.<br/>Mit dem Wetter.", "duration": 900,
+           "broadcastedOn": "2026-10-25T19:00:00Z", "broadcastEnd": "2026-10-25T19:15:00Z",
+           "channel": {"id": "daserste", "name": "Das Erste"}},
+          {"id": "a2", "type": "broadcast", "title": "Tatort", "subline": "Nebel über dem Hafen",
+           "synopsis": "Ein Frachter läuft ohne Besatzung ein &amp; niemand weiß, warum.",
+           "broadcastedOn": "2026-10-25T19:15:00Z", "broadcastEnd": "2026-10-25T20:45:00Z"}
+        ],
+        [
+          {"id": "a3", "title": "", "coreTitle": "Caren Miosga", "coreSubline": "Talk",
+           "broadcastedOn": "2026-10-25T20:45:00Z", "broadcastEnd": "2026-10-25T21:45:00Z"},
+          {"id": "broken", "title": "Ohne Zeit"}
+        ]
+      ]
+    },
+    {
+      "id": "ndr",
+      "publicationService": {"name": "NDR Fernsehen"},
+      "timeSlots": [[
+        {"title": "NDR Info", "broadcastedOn": "2026-10-25T20:00:00+01:00", "broadcastEnd": "2026-10-25T20:15:00+01:00"}
+      ]]
+    },
+    {
+      "id": "unbekannt",
+      "publicationService": {"name": "Ein Sender, den die App nicht kennt"},
+      "timeSlots": [[
+        {"title": "Irgendwas", "broadcastedOn": "2026-10-25T20:00:00Z", "broadcastEnd": "2026-10-25T21:00:00Z"}
+      ]]
+    }
+  ]
+}

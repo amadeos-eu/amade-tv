@@ -1,0 +1,29 @@
+{
+  "data": {
+    "epg": [
+      {
+        "broadcaster": {"id": "ZDF", "title": "ZDF", "logo": {"layouts": {"original": "https://example.org/zdf.png"}}},
+        "broadcasts": [
+          {"title": "heute journal", "subheadline": "", "text": "Nachrichten und Hintergründe.",
+           "airtimeBegin": "2026-10-25T21:45:00+01:00", "airtimeEnd": "2026-10-25T22:15:00+01:00", "tvService": "ZDF"},
+          {"title": "Terra X", "subheadline": "Vulkane – Feuer aus der Tiefe (1/2)", "text": "Vom Ätna bis Island.<br/>Teil 1.",
+           "airtimeBegin": "2026-10-25T19:30:00+01:00", "airtimeEnd": "2026-10-25T20:15:00+01:00"}
+        ]
+      },
+      {
+        "broadcaster": {"id": "KI.KA", "title": "KiKA"},
+        "broadcasts": [
+          {"title": "Abendgruß", "airtimeBegin": "2026-10-25T18:50:00+01:00", "airtimeEnd": "2026-10-25T19:00:00+01:00"},
+          {"title": "Ohne Ende", "airtimeBegin": "2026-10-25T19:00:00+01:00"}
+        ]
+      },
+      {
+        "broadcaster": {"id": "arte", "title": "ARTE"},
+        "broadcasts": [
+          {"title": "Wilde Küsten Europas", "subheadline": null, "text": null,
+           "airtimeBegin": "2026-10-25T20:15:00+01:00", "airtimeEnd": "2026-10-25T21:00:00+01:00"}
+        ]
+      }
+    ]
+  }
+}

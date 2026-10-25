@@ -1,0 +1,6 @@
+{
+  "das_erste": {"streamUrl": "https://daserste-live.ard-mcdn.de/daserste/live/hls/de/master.m3u8", "name": "Das Erste"},
+  "zdf": {"streamUrl": "https://zdf-hls-15.akamaized.net/hls/live/2016498/de/high/master.m3u8", "name": "ZDF"},
+  "new_channel": {"streamUrl": "https://example.org/new.m3u8", "name": "Neu"},
+  "broken": {"streamUrl": "javascript:alert(1)", "name": "Kaputt"}
+}
