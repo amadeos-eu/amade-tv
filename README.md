@@ -8,6 +8,10 @@ public broadcasters with a program guide, in a Motif/CDE-styled window. Playback
 Status: **step 1, Live and Guide.** Step 2 adds the library of the broadcasters' on-demand
 programs, downloads and a watch-later list.
 
+Platforms: **Linux only for now** (amadeOS, Debian and Ubuntu with `libmpv2`). The code would load
+`libmpv-2.dll` on Windows, but no Windows installer is built: it would have to bundle libmpv and its
+FFmpeg libraries with jpackage, which amade-tv does not do yet. The CI builds only the Debian package.
+
 ## Features
 
 | Page | What it shows | Notes |

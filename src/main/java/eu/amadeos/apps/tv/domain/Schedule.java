@@ -28,6 +28,7 @@ public final class Schedule {
         return EMPTY.with(items);
     }
 
+    // --8<-- [start:with]
     public Schedule with(Collection<Broadcast> items) {
         if (items.isEmpty()) return this;
         Map<String, List<Broadcast>> fresh = new HashMap<>();
@@ -44,6 +45,7 @@ public final class Schedule {
         });
         return new Schedule(Map.copyOf(next));
     }
+    // --8<-- [end:with]
 
     /** All items of a channel, by start time. */
     public List<Broadcast> of(String channelId) {

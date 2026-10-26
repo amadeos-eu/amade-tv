@@ -50,6 +50,7 @@ public final class ReminderStore {
         return !removed;
     }
 
+    // --8<-- [start:due]
     /** The reminders due at {@code now} (started within the last ten minutes), removed from the store. */
     public synchronized List<Reminder> takeDue(Instant now) {
         List<Reminder> due = reminders.stream().filter(r -> !r.start().isAfter(now)).toList();
@@ -59,6 +60,7 @@ public final class ReminderStore {
         Instant late = now.minusSeconds(600);
         return due.stream().filter(r -> r.start().isAfter(late)).toList();
     }
+    // --8<-- [end:due]
 
     private void load(Instant now) {
         if (!Files.isRegularFile(file)) return;

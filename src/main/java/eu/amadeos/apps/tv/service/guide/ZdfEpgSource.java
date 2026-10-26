@@ -54,6 +54,7 @@ public final class ZdfEpgSource implements GuideSource {
         return Channel.GuideSourceId.ZDF;
     }
 
+    // --8<-- [start:day]
     @Override
     public List<Broadcast> day(LocalDate day, List<Channel> channels) throws IOException {
         Instant from = day.atStartOfDay(BROADCAST_ZONE).toInstant();
@@ -69,6 +70,7 @@ public final class ZdfEpgSource implements GuideSource {
         }
         return parse(answer, channels);
     }
+    // --8<-- [end:day]
 
     private String token() throws IOException {
         String t = token;
@@ -79,11 +81,13 @@ public final class ZdfEpgSource implements GuideSource {
         return t;
     }
 
+    // --8<-- [start:token]
     static String token(String page) throws IOException {
         Matcher m = TOKEN.matcher(page);
         if (!m.find()) throw new IOException("ZDF: no app token on " + PAGE);
         return m.group(1);
     }
+    // --8<-- [end:token]
 
     private static Map<String, String> headers(String token) {
         return Map.of("api-auth", "Bearer " + token, "Origin", "https://www.zdf.de", "Referer", "https://www.zdf.de/");

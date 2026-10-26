@@ -48,6 +48,7 @@ public final class ChannelCatalog {
     }
 
     /** @param installed whether a program a stream needs (e.g. yt-dlp) is installed */
+    // --8<-- [start:read]
     ChannelCatalog(Path cacheDirectory, String json, Predicate<String> installed) {
         this.urlCache = cacheDirectory.resolve("stream-urls.json");
         List<Channel> list = new ArrayList<>();
@@ -66,6 +67,7 @@ public final class ChannelCatalog {
         this.updatedUrls = cachedUrls();
         this.channels = withUrls(shipped, updatedUrls);
     }
+    // --8<-- [end:read]
 
     /** All channels in the shipped order. */
     public List<Channel> all() {
@@ -94,6 +96,7 @@ public final class ChannelCatalog {
         return channels.stream().filter(c -> c.id().equals(id)).findFirst().orElse(null);
     }
 
+    // --8<-- [start:urls]
     /**
      * New stream addresses (from the Zapp service or the Kodinerds lists) by channel id; unknown ids and
      * empty addresses are ignored, channels not named keep theirs. Saved, so the next start uses them
@@ -116,6 +119,7 @@ public final class ChannelCatalog {
             LOG.warn("Cannot keep the stream addresses in {}", urlCache, e);
         }
     }
+    // --8<-- [end:urls]
 
     private Map<String, String> cachedUrls() {
         if (!Files.isRegularFile(urlCache)) return Map.of();

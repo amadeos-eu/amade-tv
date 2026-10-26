@@ -70,6 +70,7 @@ public final class GuideService {
         return Map.copyOf(problems);
     }
 
+    // --8<-- [start:load]
     /**
      * Loads the day (in the broadcasters' time) for all channels that have a day schedule, from disk if fresh
      * enough, otherwise from the sources. ARD's day starts at 5 am, so its previous day is loaded as well for
@@ -85,7 +86,9 @@ public final class GuideService {
         }
         merge(items);
     }
+    // --8<-- [end:load]
 
+    // --8<-- [start:now]
     /**
      * For each channel with nothing known at this moment, asks Zapp what runs now. Also fills gaps when a
      * source fails.
@@ -106,7 +109,9 @@ public final class GuideService {
         }
         merge(items);
     }
+    // --8<-- [end:now]
 
+    // --8<-- [start:day]
     private List<Broadcast> day(GuideSource source, LocalDate day, List<Channel> channels) {
         Path file = cacheDirectory.resolve(source.id() + "-" + day + ".json");
         Optional<Cached> cached = read(file);
@@ -126,6 +131,7 @@ public final class GuideService {
             return cached.map(Cached::items).orElse(List.of());
         }
     }
+    // --8<-- [end:day]
 
     private void merge(List<Broadcast> items) {
         if (items.isEmpty()) return;

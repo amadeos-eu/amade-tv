@@ -45,6 +45,7 @@ class MpvPlayerTest {
         assertEquals(PlayerState.Status.LOADING, change(PlayerState.IDLE.loading("b"), MpvPlayer.EOF, true).status());
     }
 
+    // --8<-- [start:behind]
     @Test
     void aPauseLetsThePictureFallBehindLive() {
         MutableClock clock = new MutableClock();
@@ -60,6 +61,7 @@ class MpvPlayerTest {
         assertEquals(0, player.state().behind(), 0.001);
         assertTrue(player.state().isLive());
     }
+    // --8<-- [end:behind]
 
     @Test
     void anErrorBecomesTheFailedState() {

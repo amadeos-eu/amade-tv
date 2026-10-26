@@ -150,6 +150,7 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions 
 
     // ---- channels and program --------------------------------------------------------------------
 
+    // --8<-- [start:show-channels]
     private void showChannels() {
         List<Channel> shown = catalog.shown(preferences.groups());
         window.live.setChannels(shown);
@@ -158,6 +159,7 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions 
                 || catalog.group(c) == ChannelGroup.REGIONAL).toList());
         if (playing != null) window.live.setPlaying(playing);
     }
+    // --8<-- [end:show-channels]
 
     private void showSchedule() {
         Instant now = clock.instant();
@@ -177,6 +179,7 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions 
         window.guide.repaint();
     }
 
+    // --8<-- [start:streams]
     private void refreshStreamUrls() {
         try {
             catalog.updateStreamUrls(zapp.streamUrls());
@@ -195,7 +198,9 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions 
         }
         edt.execute(this::showChannels);
     }
+    // --8<-- [end:streams]
 
+    // --8<-- [start:tick]
     void tick() {
         Instant now = clock.instant();
         showSchedule();
@@ -213,6 +218,7 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions 
             });
         }
     }
+    // --8<-- [end:tick]
 
     void refresh() {
         LocalDate day = window.guide.day();
@@ -322,11 +328,13 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions 
         if (player.state().hasMedia()) player.seekBy(-BACK_SECONDS);
     }
 
+    // --8<-- [start:to-live]
     /** Back to the live edge: the stream is opened again, which is what every HLS player does. */
     @Override
     public void toLive() {
         if (playing != null && player.state().hasMedia()) watch(playing);
     }
+    // --8<-- [end:to-live]
 
     @Override
     public void stop() {
@@ -399,12 +407,14 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions 
                 Mnemonics.strip(tr("menu.about")), JOptionPane.INFORMATION_MESSAGE, icon);
     }
 
+    // --8<-- [start:quit]
     void quit() {
         if (timer != null) timer.stop();
         player.close();
         for (Window w : Window.getWindows()) w.dispose();
         executor.shutdownNow();
     }
+    // --8<-- [end:quit]
 
     private void background(Runnable task) {
         try {
