@@ -1,11 +1,15 @@
 package eu.amadeos.apps.tv.repository;
 
+import eu.amadeos.apps.tv.domain.ChannelGroup;
 import eu.amadeos.commons.config.PropertiesFile;
 
 import java.nio.file.Path;
+import java.util.EnumSet;
 import java.util.Properties;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-/** The app's own settings in {@code ~/.config/amadeos/tv/tv.properties}: last channel, volume, regional channels. */
+/** The app's own settings in {@code ~/.config/amadeos/tv/tv.properties}: last channel, volume, channel groups. */
 public final class TvPreferences {
     private final Path file;
     private final Properties properties;
@@ -35,12 +39,28 @@ public final class TvPreferences {
         set("volume", Integer.toString(volume));
     }
 
-    public boolean showRegional() {
-        return Boolean.parseBoolean(properties.getProperty("regional", "false"));
+    /** The channel groups switched on besides the main channels; none at first. */
+    public Set<ChannelGroup> groups() {
+        Set<ChannelGroup> groups = EnumSet.noneOf(ChannelGroup.class);
+        String list = properties.getProperty("groups");
+        if (list == null) {
+            // The first version kept only the regional channels: regional=true
+            if (Boolean.parseBoolean(properties.getProperty("regional", "false"))) groups.add(ChannelGroup.REGIONAL);
+            return groups;
+        }
+        for (String key : list.split(",")) {
+            ChannelGroup g = ChannelGroup.of(key.strip());
+            if (g != ChannelGroup.MAIN) groups.add(g);
+        }
+        return groups;
     }
 
-    public void setShowRegional(boolean show) {
-        set("regional", Boolean.toString(show));
+    public void setGroup(ChannelGroup group, boolean shown) {
+        Set<ChannelGroup> groups = groups();
+        if (shown) groups.add(group);
+        else groups.remove(group);
+        properties.remove("regional");
+        set("groups", groups.stream().map(ChannelGroup::key).collect(Collectors.joining(",")));
     }
 
     private void set(String key, String value) {

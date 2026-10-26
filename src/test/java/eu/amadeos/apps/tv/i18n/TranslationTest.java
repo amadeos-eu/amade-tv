@@ -28,7 +28,8 @@ class TranslationTest {
                 List.of("menu.live", "menu.guide", "menu.find", "menu.full-screen"),
                 List.of("menu.play-pause", "menu.back", "menu.to-live", "menu.stop", "menu.mute", "menu.louder",
                         "menu.quieter", "menu.subtitles", "menu.audio"),
-                List.of("menu.previous-channel", "menu.next-channel", "menu.regional", "menu.refresh"),
+                List.of("menu.previous-channel", "menu.next-channel", "menu.group.regional",
+                        "menu.group.atch", "menu.group.international", "menu.group.more", "menu.refresh"),
                 // The sidebar buttons are in the window together with each page's buttons.
                 List.of("page.live", "page.guide", "guide.now", "guide.prime-time", "guide.find", "guide.watch",
                         "guide.remind"),

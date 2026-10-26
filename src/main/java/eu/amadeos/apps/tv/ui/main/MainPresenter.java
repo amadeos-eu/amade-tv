@@ -1,5 +1,7 @@
 package eu.amadeos.apps.tv.ui.main;
 
+import eu.amadeos.apps.tv.domain.ChannelGroup;
+import eu.amadeos.apps.tv.service.net.KodinerdsList;
 import static eu.amadeos.commons.i18n.Texts.tr;
 
 import com.google.inject.Inject;
@@ -33,6 +35,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -54,6 +57,7 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions 
     private final ChannelCatalog catalog;
     private final GuideService guide;
     private final ZappService zapp;
+    private final KodinerdsList kodinerds;
     private final LogoCache logos;
     private final ReminderStore reminders;
     private final TvPreferences preferences;
@@ -70,12 +74,13 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions 
 
     @Inject
     public MainPresenter(MpvPlayer player, ChannelCatalog catalog, GuideService guide, ZappService zapp,
-                         LogoCache logos, ReminderStore reminders, TvPreferences preferences, EdtExecutor edt,
+                         KodinerdsList kodinerds, LogoCache logos, ReminderStore reminders, TvPreferences preferences, EdtExecutor edt,
                          ExecutorService executor, Clock clock) {
         this.player = player;
         this.catalog = catalog;
         this.guide = guide;
         this.zapp = zapp;
+        this.kodinerds = kodinerds;
         this.logos = logos;
         this.reminders = reminders;
         this.preferences = preferences;
@@ -93,7 +98,7 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions 
         live.setReminded(reminders::has);
         guidePage.setReminded(reminders::has);
         window = new MainWindow(this, live, guidePage);
-        window.regional.setSelected(preferences.showRegional());
+        preferences.groups().forEach(g -> window.groups.get(g).setSelected(true));
         window.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -146,9 +151,11 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions 
     // ---- channels and program --------------------------------------------------------------------
 
     private void showChannels() {
-        List<Channel> shown = catalog.shown(preferences.showRegional());
+        List<Channel> shown = catalog.shown(preferences.groups());
         window.live.setChannels(shown);
-        window.guide.setChannels(shown);
+        // The guide only has rows for channels some source knows the program of.
+        window.guide.setChannels(shown.stream().filter(c -> c.guide() != Channel.GuideSourceId.NONE
+                || catalog.group(c) == ChannelGroup.REGIONAL).toList());
         if (playing != null) window.live.setPlaying(playing);
     }
 
@@ -172,12 +179,21 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions 
 
     private void refreshStreamUrls() {
         try {
-            Map<String, String> urls = zapp.streamUrls();
-            catalog.updateStreamUrls(urls);
-            edt.execute(this::showChannels);
+            catalog.updateStreamUrls(zapp.streamUrls());
         } catch (IOException e) {
-            LOG.info("Keeping the known stream addresses: {}", e.getMessage());
+            LOG.info("Keeping the known stream addresses of Zapp: {}", e.getMessage());
         }
+        try {
+            Map<String, String> byTvgId = kodinerds.streamUrls();
+            Map<String, String> urls = new HashMap<>();
+            catalog.kodinerdsIds().forEach((tvgId, channelId) -> {
+                if (byTvgId.containsKey(tvgId)) urls.put(channelId, byTvgId.get(tvgId));
+            });
+            catalog.updateStreamUrls(urls);
+        } catch (IOException e) {
+            LOG.info("Keeping the known stream addresses of the Kodinerds list: {}", e.getMessage());
+        }
+        edt.execute(this::showChannels);
     }
 
     void tick() {
@@ -208,8 +224,8 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions 
         });
     }
 
-    void setShowRegional(boolean show) {
-        preferences.setShowRegional(show);
+    void setGroup(ChannelGroup group, boolean shown) {
+        preferences.setGroup(group, shown);
         showChannels();
         showSchedule();
     }
@@ -255,7 +271,7 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions 
 
     /** Channel up/down in the shown list. */
     void switchChannel(int delta) {
-        List<Channel> shown = catalog.shown(preferences.showRegional());
+        List<Channel> shown = catalog.shown(preferences.groups());
         if (shown.isEmpty()) return;
         int i = playing == null ? -1 : shown.stream().map(Channel::id).toList().indexOf(playing.id());
         watch(shown.get(Math.floorMod(i + delta, shown.size())));
