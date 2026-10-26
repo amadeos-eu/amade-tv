@@ -26,6 +26,7 @@ class ScheduleTest {
         assertFalse(s.isEmpty());
     }
 
+    // --8<-- [start:replace]
     @Test
     void newItemsReplaceTheOverlappingOldOnes() {
         // Zapp knew only "now", the day schedule then brings the real items.
@@ -37,6 +38,7 @@ class ScheduleTest {
         assertEquals(3, other.of("a").size());
         assertSame(s, s.with(List.of()));
     }
+    // --8<-- [end:replace]
 
     @Test
     void theSameItemTwiceIsKeptOnce() {

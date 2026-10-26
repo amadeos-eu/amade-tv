@@ -67,11 +67,13 @@ public final class TvModule extends AbstractModule {
         return new KodinerdsList(web);
     }
 
+    // --8<-- [start:guide]
     @Provides
     @Singleton
     ZappService zapp(Web web) {
         return new ZappService(web);
     }
+    // --8<-- [end:guide]
 
     @Provides
     @Singleton

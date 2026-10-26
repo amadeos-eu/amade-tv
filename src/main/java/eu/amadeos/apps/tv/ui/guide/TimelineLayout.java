@@ -7,6 +7,7 @@ import java.time.Instant;
  * Where things go in the guide's time grid: a day from {@code from}, {@code pixelsPerHour} wide per hour,
  * one row per channel. Pure arithmetic, so it can be tested without a window.
  */
+// --8<-- [start:layout]
 record TimelineLayout(Instant from, Instant to, int pixelsPerHour, int rowHeight) {
 
     int width() {
@@ -32,3 +33,4 @@ record TimelineLayout(Instant from, Instant to, int pixelsPerHour, int rowHeight
         return new int[]{x0, Math.max(x0 + 3, x1)};
     }
 }
+// --8<-- [end:layout]

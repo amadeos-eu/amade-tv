@@ -44,6 +44,7 @@ public final class ArdProgramSource implements GuideSource {
         return parse(web.get(URL + day), channels);
     }
 
+    // --8<-- [start:parse]
     static List<Broadcast> parse(String json, List<Channel> channels) throws IOException {
         Map<String, Object> program;
         try {
@@ -65,6 +66,7 @@ public final class ArdProgramSource implements GuideSource {
         }
         return items;
     }
+    // --8<-- [end:parse]
 
     /** By the service's channel id ("daserste") or its name ("Das Erste"). */
     static Optional<Channel> match(Object serviceChannel, List<Channel> channels) {

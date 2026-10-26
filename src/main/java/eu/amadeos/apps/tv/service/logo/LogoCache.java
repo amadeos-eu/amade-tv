@@ -48,6 +48,7 @@ public final class LogoCache {
         this.height = height;
     }
 
+    // --8<-- [start:logo]
     /**
      * The logo if it is ready; otherwise starts loading it and calls {@code ready} (on a background thread)
      * once it is there.
@@ -68,6 +69,7 @@ public final class LogoCache {
         }
         return Optional.empty();
     }
+    // --8<-- [end:logo]
 
     private Optional<Logo> load(Channel channel) {
         String url = channel.logoUrl();
@@ -99,6 +101,7 @@ public final class LogoCache {
         return name.isEmpty() ? Integer.toHexString(url.hashCode()) + ".png" : name;
     }
 
+    // --8<-- [start:prepare]
     /** Turns the picture by {@code turn} degrees clockwise, crops the transparent margin and fits it in. */
     public static Logo prepare(BufferedImage source, int turn, int maxWidth, int maxHeight) {
         BufferedImage argb = turned(toArgb(source), turn);
@@ -115,6 +118,7 @@ public final class LogoCache {
         g.dispose();
         return new Logo(out, isLight(cropped));
     }
+    // --8<-- [end:prepare]
 
     private static BufferedImage toArgb(BufferedImage source) {
         BufferedImage argb = new BufferedImage(source.getWidth(), source.getHeight(), BufferedImage.TYPE_INT_ARGB);

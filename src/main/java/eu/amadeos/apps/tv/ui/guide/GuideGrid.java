@@ -176,6 +176,7 @@ final class GuideGrid extends JComponent implements Scrollable {
         return new Dimension(layout.width(), Math.max(1, channels.size()) * ROW_HEIGHT);
     }
 
+    // --8<-- [start:paint]
     @Override
     protected void paintComponent(Graphics g0) {
         Graphics2D g = (Graphics2D) g0.create();
@@ -201,6 +202,7 @@ final class GuideGrid extends JComponent implements Scrollable {
         }
         g.dispose();
     }
+    // --8<-- [end:paint]
 
     private void paintCell(Graphics2D g, DesktopTheme t, Font font, Broadcast b, int y) {
         int[] span = layout.span(b.start(), b.end());
