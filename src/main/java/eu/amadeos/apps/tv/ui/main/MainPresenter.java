@@ -9,6 +9,7 @@ import com.sun.jna.Native;
 import eu.amadeos.apps.tv.domain.Broadcast;
 import eu.amadeos.apps.tv.domain.Channel;
 import eu.amadeos.apps.tv.domain.PlayerState;
+import eu.amadeos.apps.tv.domain.Recording;
 import eu.amadeos.apps.tv.domain.Reminder;
 import eu.amadeos.apps.tv.repository.ChannelCatalog;
 import eu.amadeos.apps.tv.repository.ReminderStore;
@@ -17,8 +18,11 @@ import eu.amadeos.apps.tv.service.guide.GuideService;
 import eu.amadeos.apps.tv.service.guide.ZappService;
 import eu.amadeos.apps.tv.service.logo.LogoCache;
 import eu.amadeos.apps.tv.service.mpv.MpvPlayer;
+import eu.amadeos.apps.tv.service.record.Recorder;
 import eu.amadeos.apps.tv.ui.guide.GuidePage;
 import eu.amadeos.apps.tv.ui.live.LivePage;
+import eu.amadeos.apps.tv.ui.recordings.RecordingsPage;
+import eu.amadeos.commons.desktop.DesktopLauncher;
 import eu.amadeos.commons.i18n.Mnemonics;
 import eu.amadeos.commons.swing.EdtExecutor;
 import org.slf4j.Logger;
@@ -29,6 +33,8 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -38,15 +44,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionException;
 
 /**
  * Connects the window to the player, the channels and the guide. Runs on the EDT; player states and new
  * program data arrive through the EDT executor. A timer ticks every 20 seconds: progress bars, reminders,
- * and every few minutes what runs now on channels without a day schedule.
+ * recordings that are due, and every few minutes what runs now on channels without a day schedule.
  */
-public final class MainPresenter implements LivePage.Actions, GuidePage.Actions {
+public final class MainPresenter implements LivePage.Actions, GuidePage.Actions, RecordingsPage.Actions {
     private static final Logger LOG = LoggerFactory.getLogger(MainPresenter.class);
     static final int TICK_MILLIS = 20_000;
     static final Duration NOW_REFRESH = Duration.ofMinutes(5);
@@ -61,6 +68,8 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions 
     private final LogoCache logos;
     private final ReminderStore reminders;
     private final TvPreferences preferences;
+    private final Recorder recorder;
+    private final DesktopLauncher desktop;
     private final EdtExecutor edt;
     private final ExecutorService executor;
     private final Clock clock;
@@ -74,8 +83,9 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions 
 
     @Inject
     public MainPresenter(MpvPlayer player, ChannelCatalog catalog, GuideService guide, ZappService zapp,
-                         KodinerdsList kodinerds, LogoCache logos, ReminderStore reminders, TvPreferences preferences, EdtExecutor edt,
-                         ExecutorService executor, Clock clock) {
+                         KodinerdsList kodinerds, LogoCache logos, ReminderStore reminders, TvPreferences preferences,
+                         Recorder recorder, DesktopLauncher desktop, EdtExecutor edt, ExecutorService executor,
+                         Clock clock) {
         this.player = player;
         this.catalog = catalog;
         this.guide = guide;
@@ -84,6 +94,8 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions 
         this.logos = logos;
         this.reminders = reminders;
         this.preferences = preferences;
+        this.recorder = recorder;
+        this.desktop = desktop;
         this.edt = edt;
         this.executor = executor;
         this.clock = clock;
@@ -97,7 +109,10 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions 
         GuidePage guidePage = new GuidePage(this, zone, logoSource);
         live.setReminded(reminders::has);
         guidePage.setReminded(reminders::has);
-        window = new MainWindow(this, live, guidePage);
+        live.setRecording(this::recordingStatus);
+        guidePage.setRecording(this::recordingStatus);
+        RecordingsPage recordingsPage = new RecordingsPage(this, zone, recorder.folder());
+        window = new MainWindow(this, live, guidePage, recordingsPage);
         preferences.groups().forEach(g -> window.groups.get(g).setSelected(true));
         window.addWindowListener(new WindowAdapter() {
             @Override
@@ -110,6 +125,8 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions 
         guidePage.setDay(today, clock.instant());
         guide.addListener(() -> edt.execute(this::showSchedule));
         player.addListener(state -> edt.execute(() -> showPlayer(state)));
+        recorder.addListener(() -> edt.execute(this::showRecordings));
+        showRecordings();
         window.setVisible(true);
         showPlayer(player.state());
         SwingUtilities.invokeLater(guidePage::scrollToNow);
@@ -205,6 +222,7 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions 
         Instant now = clock.instant();
         showSchedule();
         for (Reminder r : reminders.takeDue(now)) remind(r);
+        recorder.tick(now, catalog::byId);
         LocalDate date = LocalDate.ofInstant(now, zone);
         if (!date.equals(today)) {
             today = date;
@@ -295,6 +313,84 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions 
             window.showPage(MainWindow.LIVE);
             watch(c);
         }
+    }
+
+    // ---- recordings ------------------------------------------------------------------------------
+
+    private Recording.Status recordingStatus(Broadcast b) {
+        return recorder.recordingOf(b).map(Recording::status).orElse(null);
+    }
+
+    private void showRecordings() {
+        window.recordings.setRecordings(recorder.all(), recorder::bytes);
+        window.live.repaint();
+        window.guide.repaint();
+    }
+
+    // --8<-- [start:record]
+    /** Record, Cancel Recording or Stop Recording, depending on what the program has. */
+    @Override
+    public void toggleRecording(Broadcast b) {
+        Instant now = clock.instant();
+        Optional<Recording> existing = recorder.recordingOf(b);
+        if (existing.isPresent()) {
+            recorder.stop(existing.get().id());
+            return;
+        }
+        Channel c = catalog.byId(b.channelId());
+        if (c == null || !b.end().isAfter(now)) return;
+        recorder.plan(b, c, now);
+        // A program that runs already starts recording at once.
+        recorder.tick(now, catalog::byId);
+    }
+    // --8<-- [end:record]
+
+    @Override
+    public void play(Recording r) {
+        open(r.file());
+    }
+
+    @Override
+    public void showInFolder(Recording r) {
+        open(r.file().getParent());
+    }
+
+    @Override
+    public void stopRecording(Recording r) {
+        recorder.stop(r.id());
+    }
+
+    @Override
+    public void removeRecording(Recording r) {
+        boolean hasFile = r.status() != Recording.Status.PLANNED && Files.exists(r.file());
+        JCheckBox delete = Mnemonics.apply(new JCheckBox(), tr("recordings.remove.delete"));
+        Object message = hasFile ? new Object[]{tr("recordings.remove.text", r.title()), delete}
+                : tr("recordings.remove.text", r.title());
+        if (JOptionPane.showConfirmDialog(window, message, Mnemonics.strip(tr("recordings.remove")),
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) != JOptionPane.OK_OPTION) {
+            return;
+        }
+        recorder.remove(r.id());
+        if (hasFile && delete.isSelected()) {
+            try {
+                Files.deleteIfExists(r.file());
+            } catch (IOException e) {
+                LOG.warn("Cannot delete {}", r.file(), e);
+                JOptionPane.showMessageDialog(window, tr("recordings.remove.failed", e.getMessage()),
+                        tr("app.title"), JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void open(Path path) {
+        background(() -> {
+            try {
+                desktop.open(path);
+            } catch (IOException e) {
+                edt.execute(() -> JOptionPane.showMessageDialog(window, tr("recordings.open-failed", path,
+                        e.getMessage()), tr("app.title"), JOptionPane.ERROR_MESSAGE));
+            }
+        });
     }
 
     // ---- player ----------------------------------------------------------------------------------
@@ -409,7 +505,13 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions 
 
     // --8<-- [start:quit]
     void quit() {
+        if (recorder.isRecording() && JOptionPane.showConfirmDialog(window, tr("quit.recording"), tr("app.title"),
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.OK_OPTION) {
+            return;
+        }
         if (timer != null) timer.stop();
+        // ffmpeg writes the end of each file before it exits.
+        recorder.stopAll(Duration.ofSeconds(5));
         player.close();
         for (Window w : Window.getWindows()) w.dispose();
         executor.shutdownNow();

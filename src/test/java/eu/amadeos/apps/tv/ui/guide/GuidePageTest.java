@@ -2,6 +2,7 @@ package eu.amadeos.apps.tv.ui.guide;
 
 import eu.amadeos.apps.tv.domain.Broadcast;
 import eu.amadeos.apps.tv.domain.Channel;
+import eu.amadeos.apps.tv.domain.Recording;
 import eu.amadeos.apps.tv.domain.Schedule;
 import eu.amadeos.apps.tv.ui.main.LogoSource;
 import eu.amadeos.commons.i18n.Texts;
@@ -15,8 +16,10 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static eu.amadeos.apps.tv.testing.Fixtures.channel;
@@ -58,6 +61,15 @@ class GuidePageTest {
             calls.add("remind " + b.title());
             if (!reminded.remove(b)) reminded.add(b);
         }
+
+        final Map<Broadcast, Recording.Status> recording = new HashMap<>();
+
+        public void toggleRecording(Broadcast b) {
+            calls.add("record " + b.title());
+            Recording.Status s = recording.get(b);
+            if (s == null) recording.put(b, b.start().isAfter(NOW) ? Recording.Status.PLANNED : Recording.Status.RECORDING);
+            else recording.remove(b);
+        }
     }
 
     GuidePage page(Recorder r) throws Exception {
@@ -65,6 +77,7 @@ class GuidePageTest {
         SwingUtilities.invokeAndWait(() -> {
             page[0] = new GuidePage(r, BERLIN, LogoSource.NONE);
             page[0].setReminded(r.reminded::contains);
+            page[0].setRecording(r.recording::get);
             page[0].setChannels(CHANNELS);
             page[0].setDay(LocalDate.of(2026, 10, 25), NOW);
             page[0].setSchedule(Schedule.of(List.of(TATORT, JOURNAL, TERRA)), NOW);
@@ -101,6 +114,26 @@ class GuidePageTest {
             assertFalse(p.remind.isEnabled());
         });
         assertEquals(List.of("watch Tatort", "remind heute journal"), r.calls);
+    }
+
+    @Test
+    void recordPlansCancelsAndStops() throws Exception {
+        Recorder r = new Recorder();
+        GuidePage p = page(r);
+        SwingUtilities.invokeAndWait(() -> {
+            p.grid.select(TERRA);
+            assertFalse(p.record.isEnabled());
+            p.grid.select(JOURNAL);
+            assertEquals("Record", p.record.getText());
+            p.record.doClick();
+            assertEquals("Cancel Recording", p.record.getText());
+            p.record.doClick();
+            assertEquals("Record", p.record.getText());
+            p.grid.select(TATORT);
+            p.record.doClick();
+            assertEquals("Stop Recording", p.record.getText());
+        });
+        assertEquals(List.of("record heute journal", "record heute journal", "record Tatort"), r.calls);
     }
 
     @Test

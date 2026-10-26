@@ -4,6 +4,7 @@ import static eu.amadeos.commons.i18n.Texts.tr;
 
 import eu.amadeos.apps.tv.domain.Broadcast;
 import eu.amadeos.apps.tv.domain.Channel;
+import eu.amadeos.apps.tv.domain.Recording;
 import eu.amadeos.apps.tv.domain.Schedule;
 import eu.amadeos.apps.tv.ui.main.LogoSource;
 import eu.amadeos.commons.i18n.Mnemonics;
@@ -20,11 +21,12 @@ import java.time.format.FormatStyle;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
  * The program guide: a day of all channels in a time grid, with day buttons, "Now", "Prime time" and a
- * search that marks the hits; below, the selected item with Watch live and Remind me.
+ * search that marks the hits; below, the selected item with Watch live, Remind me and Record.
  */
 public final class GuidePage extends JPanel {
     /** What the page asks of the presenter. */
@@ -34,6 +36,9 @@ public final class GuidePage extends JPanel {
         void watch(Broadcast b);
 
         void toggleReminder(Broadcast b);
+
+        /** Plans a recording of the program, or cancels or stops it. */
+        void toggleRecording(Broadcast b);
     }
 
     private static final DateTimeFormatter TIME = DateTimeFormatter.ofPattern("HH:mm");
@@ -46,6 +51,7 @@ public final class GuidePage extends JPanel {
     final JTextArea detailText = new JTextArea(3, 40);
     final JButton watch = new JButton();
     final JButton remind = new JButton();
+    final JButton record = new JButton();
     private final Actions actions;
     private final ZoneId zone;
     private LocalDate shown;
@@ -53,6 +59,7 @@ public final class GuidePage extends JPanel {
     private int hit = -1;
     private Instant now = Instant.now();
     private Predicate<Broadcast> reminded = b -> false;
+    private Function<Broadcast, Recording.Status> recording = b -> null;
 
     public GuidePage(Actions actions, ZoneId zone, LogoSource logos) {
         super(new BorderLayout());
@@ -129,12 +136,18 @@ public final class GuidePage extends JPanel {
             showDetails(b);
             grid.repaint();
         }));
+        record.addActionListener(e -> Optional.ofNullable(grid.selected()).ifPresent(b -> {
+            actions.toggleRecording(b);
+            showDetails(b);
+            grid.repaint();
+        }));
         JPanel text = new JPanel(new BorderLayout(0, 2));
         text.add(detailTitle, BorderLayout.NORTH);
         text.add(detailText, BorderLayout.CENTER);
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 4, 0));
         buttons.add(watch);
         buttons.add(remind);
+        buttons.add(record);
         JPanel details = new JPanel(new BorderLayout(10, 0));
         details.setBorder(new EmptyBorder(6, 8, 6, 8));
         details.add(text, BorderLayout.CENTER);
@@ -184,6 +197,12 @@ public final class GuidePage extends JPanel {
         grid.setReminded(reminded);
     }
 
+    /** What is being recorded: the status of the program's planned or running recording, or null. */
+    public void setRecording(Function<Broadcast, Recording.Status> recording) {
+        this.recording = recording;
+        grid.setRecording(recording);
+    }
+
     /** Scrolls to the current time; on first show. */
     public void scrollToNow() {
         grid.scrollTo(now);
@@ -214,11 +233,20 @@ public final class GuidePage extends JPanel {
         findResult.setText(tr("guide.find.position", hit + 1, hits.size()));
     }
 
+    /** The text of the record button: Record, Cancel Recording or Stop Recording. */
+    public static String recordKey(Recording.Status status) {
+        if (status == Recording.Status.RECORDING) return "record.stop";
+        return status == Recording.Status.PLANNED ? "record.cancel" : "record";
+    }
+
     private void showDetails(Broadcast b) {
         watch.setEnabled(b != null && b.isRunningAt(now));
         remind.setEnabled(b != null && b.start().isAfter(now));
         boolean set = b != null && reminded.test(b);
         Mnemonics.apply(remind, tr(set ? "guide.remind.cancel" : "guide.remind"));
+        Recording.Status rec = b == null ? null : recording.apply(b);
+        record.setEnabled(b != null && b.end().isAfter(now));
+        Mnemonics.apply(record, tr(recordKey(rec)));
         if (b == null) {
             detailTitle.setText(tr("guide.select"));
             detailText.setText("");

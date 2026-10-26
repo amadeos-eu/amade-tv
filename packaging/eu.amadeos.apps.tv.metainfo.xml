@@ -40,6 +40,11 @@
       <li xml:lang="fr">Guide des programmes sur plusieurs jours avec recherche et rappels</li>
       <li xml:lang="es">Guía de programación de varios días con búsqueda y recordatorios</li>
       <li xml:lang="it">Guida ai programmi di più giorni con ricerca e promemoria</li>
+      <li>Record programs from the live stream into the videos folder</li>
+      <li xml:lang="de">Sendungen aus dem Live-Stream in den Videos-Ordner aufnehmen</li>
+      <li xml:lang="fr">Enregistrement des émissions du direct dans le dossier Vidéos</li>
+      <li xml:lang="es">Grabación de programas de la emisión en directo en la carpeta de vídeos</li>
+      <li xml:lang="it">Registrazione dei programmi dalla diretta nella cartella Video</li>
     </ul>
   </description>
 

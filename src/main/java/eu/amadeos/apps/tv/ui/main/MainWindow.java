@@ -5,6 +5,7 @@ import static eu.amadeos.commons.i18n.Texts.tr;
 
 import eu.amadeos.apps.tv.ui.guide.GuidePage;
 import eu.amadeos.apps.tv.ui.live.LivePage;
+import eu.amadeos.apps.tv.ui.recordings.RecordingsPage;
 import eu.amadeos.commons.i18n.Mnemonics;
 
 import javax.swing.*;
@@ -16,17 +17,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 /**
- * The window: menu bar, a sidebar with the pages (Live, Guide; Library and Downloads follow in step 2) and
+ * The window: menu bar, a sidebar with the pages (Live, Guide, Recordings; the Library follows) and
  * the pages themselves in a card layout.
  */
 final class MainWindow extends JFrame {
     static final String LIVE = "live";
     static final String GUIDE = "guide";
+    static final String RECORDINGS = "recordings";
 
     final LivePage live;
     final GuidePage guide;
+    final RecordingsPage recordings;
     final JToggleButton liveButton = new JToggleButton();
     final JToggleButton guideButton = new JToggleButton();
+    final JToggleButton recordingsButton = new JToggleButton();
     /** The groups of channels besides the main ones, each switched on with its menu item. */
     final Map<ChannelGroup, JCheckBoxMenuItem> groups = new EnumMap<>(ChannelGroup.class);
     final JLabel sideStatus = new JLabel(" ");
@@ -35,10 +39,11 @@ final class MainWindow extends JFrame {
     private final JPanel pages = new JPanel(cards);
     private String page = LIVE;
 
-    MainWindow(MainPresenter p, LivePage live, GuidePage guide) {
+    MainWindow(MainPresenter p, LivePage live, GuidePage guide, RecordingsPage recordings) {
         super(tr("app.title"));
         this.live = live;
         this.guide = guide;
+        this.recordings = recordings;
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         java.net.URL icon = getClass().getResource("/icons/amade-tv.png");
         if (icon != null) setIconImage(new ImageIcon(icon).getImage());
@@ -49,6 +54,7 @@ final class MainWindow extends JFrame {
         JMenu view = menu("menu.view");
         view.add(item("menu.live", KeyStroke.getKeyStroke(KeyEvent.VK_1, KeyEvent.CTRL_DOWN_MASK), () -> showPage(LIVE)));
         view.add(item("menu.guide", KeyStroke.getKeyStroke(KeyEvent.VK_2, KeyEvent.CTRL_DOWN_MASK), () -> showPage(GUIDE)));
+        view.add(item("menu.recordings", KeyStroke.getKeyStroke(KeyEvent.VK_3, KeyEvent.CTRL_DOWN_MASK), () -> showPage(RECORDINGS)));
         view.addSeparator();
         view.add(item("menu.find", KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK), () -> {
             showPage(GUIDE);
@@ -93,7 +99,7 @@ final class MainWindow extends JFrame {
         sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
         sidebar.setBorder(new EmptyBorder(8, 8, 8, 8));
         ButtonGroup group = new ButtonGroup();
-        for (JToggleButton b : new JToggleButton[]{liveButton, guideButton}) {
+        for (JToggleButton b : new JToggleButton[]{liveButton, guideButton, recordingsButton}) {
             b.setHorizontalAlignment(SwingConstants.LEFT);
             b.setAlignmentX(0);
             Dimension size = new Dimension(130, 30);
@@ -106,8 +112,10 @@ final class MainWindow extends JFrame {
         }
         Mnemonics.apply(liveButton, tr("page.live"));
         Mnemonics.apply(guideButton, tr("page.guide"));
+        Mnemonics.apply(recordingsButton, tr("page.recordings"));
         liveButton.addActionListener(e -> showPage(LIVE));
         guideButton.addActionListener(e -> showPage(GUIDE));
+        recordingsButton.addActionListener(e -> showPage(RECORDINGS));
         sidebar.add(Box.createVerticalGlue());
         sideStatus.setAlignmentX(0);
         sideStatus.setForeground(UIManager.getColor("Label.disabledForeground"));
@@ -116,6 +124,7 @@ final class MainWindow extends JFrame {
 
         pages.add(live, LIVE);
         pages.add(guide, GUIDE);
+        pages.add(recordings, RECORDINGS);
         JPanel content = new JPanel(new BorderLayout());
         content.add(sidebar, BorderLayout.WEST);
         content.add(pages, BorderLayout.CENTER);
@@ -131,6 +140,7 @@ final class MainWindow extends JFrame {
         cards.show(pages, name);
         liveButton.setSelected(LIVE.equals(name));
         guideButton.setSelected(GUIDE.equals(name));
+        recordingsButton.setSelected(RECORDINGS.equals(name));
         if (LIVE.equals(name)) live.focusChannels();
     }
 

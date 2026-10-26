@@ -2,6 +2,7 @@ package eu.amadeos.apps.tv.ui.live;
 
 import eu.amadeos.apps.tv.domain.Broadcast;
 import eu.amadeos.apps.tv.domain.Channel;
+import eu.amadeos.apps.tv.domain.Recording;
 import eu.amadeos.apps.tv.domain.PlayerState;
 import eu.amadeos.apps.tv.domain.Schedule;
 import eu.amadeos.apps.tv.ui.main.LogoSource;
@@ -15,8 +16,10 @@ import java.awt.image.BufferedImage;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static eu.amadeos.apps.tv.testing.Fixtures.channel;
@@ -53,6 +56,15 @@ class LivePageTest {
         public void toggleReminder(Broadcast b) {
             calls.add("remind " + b.title());
             if (!reminded.remove(b)) reminded.add(b);
+        }
+
+        final Map<Broadcast, Recording.Status> recording = new HashMap<>();
+
+        public void toggleRecording(Broadcast b) {
+            calls.add("record " + b.title());
+            Recording.Status s = recording.get(b);
+            if (s == null) recording.put(b, b.start().isAfter(NOW) ? Recording.Status.PLANNED : Recording.Status.RECORDING);
+            else recording.remove(b);
         }
 
         public void togglePause() {

@@ -2,6 +2,7 @@ package eu.amadeos.apps.tv.ui.guide;
 
 import eu.amadeos.apps.tv.domain.Broadcast;
 import eu.amadeos.apps.tv.domain.Channel;
+import eu.amadeos.apps.tv.domain.Recording;
 import eu.amadeos.apps.tv.domain.Schedule;
 import eu.amadeos.apps.tv.ui.main.ChannelTile;
 import eu.amadeos.apps.tv.ui.main.LogoSource;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -32,6 +34,7 @@ final class GuideGrid extends JComponent implements Scrollable {
     static final int ROW_HEIGHT = 44;
     static final Color HIT = new Color(0xF2D27A);
     static final Color NOW_LINE = new Color(0xD84A3A);
+    static final Color RECORD = new Color(0xD0302A);
     private static final DateTimeFormatter HOUR = DateTimeFormatter.ofPattern("HH:mm");
 
     private TimelineLayout layout;
@@ -42,6 +45,7 @@ final class GuideGrid extends JComponent implements Scrollable {
     private Broadcast selected;
     private String highlight = "";
     private Predicate<Broadcast> reminded = b -> false;
+    private Function<Broadcast, Recording.Status> recording = b -> null;
     private LogoSource logos = LogoSource.NONE;
     private Consumer<Broadcast> onSelect = b -> {
     };
@@ -91,6 +95,11 @@ final class GuideGrid extends JComponent implements Scrollable {
 
     void setHighlight(String text) {
         highlight = text == null ? "" : text.strip().toLowerCase(Locale.ROOT);
+        repaint();
+    }
+
+    void setRecording(Function<Broadcast, Recording.Status> recording) {
+        this.recording = recording;
         repaint();
     }
 
@@ -226,6 +235,12 @@ final class GuideGrid extends JComponent implements Scrollable {
         String line = b.subtitle().isEmpty() ? time : time + "  " + b.subtitle();
         c.drawString(line, x + 6, y + 34);
         c.dispose();
+        if (recording.apply(b) != null && w > 20) {
+            // A red dot in the corner, as on a recorder.
+            g.setColor(RECORD);
+            ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g.fillOval(x + w - 14, y + 6, 8, 8);
+        }
     }
 
     private boolean matches(Broadcast b) {
