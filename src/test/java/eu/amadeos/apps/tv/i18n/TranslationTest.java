@@ -25,19 +25,26 @@ class TranslationTest {
     void mnemonicsAreUniqueWithinEachMenu() {
         List<List<String>> menus = List.of(
                 List.of("menu.file", "menu.view", "menu.playback", "menu.channels", "menu.help"),
-                List.of("menu.live", "menu.guide", "menu.find", "menu.full-screen"),
+                List.of("menu.live", "menu.guide", "menu.recordings", "menu.find", "menu.full-screen"),
                 List.of("menu.play-pause", "menu.back", "menu.to-live", "menu.stop", "menu.mute", "menu.louder",
                         "menu.quieter", "menu.subtitles", "menu.audio"),
                 List.of("menu.previous-channel", "menu.next-channel", "menu.group.regional",
                         "menu.group.atch", "menu.group.international", "menu.group.more", "menu.refresh"),
                 // The sidebar buttons are in the window together with each page's buttons.
-                List.of("page.live", "page.guide", "guide.now", "guide.prime-time", "guide.find", "guide.watch",
-                        "guide.remind"),
-                List.of("page.live", "page.guide", "guide.now", "guide.prime-time", "guide.find", "guide.watch",
-                        "guide.remind.cancel"),
-                List.of("page.live", "page.guide", "live.mute", "live.subtitles", "live.full-screen", "guide.remind"),
-                List.of("page.live", "page.guide", "live.mute", "live.subtitles", "live.full-screen",
-                        "guide.remind.cancel"),
+                List.of("page.live", "page.guide", "page.recordings", "guide.now", "guide.prime-time", "guide.find",
+                        "guide.watch", "guide.remind", "record"),
+                List.of("page.live", "page.guide", "page.recordings", "guide.now", "guide.prime-time", "guide.find",
+                        "guide.watch", "guide.remind.cancel", "record.cancel"),
+                List.of("page.live", "page.guide", "page.recordings", "guide.now", "guide.prime-time", "guide.find",
+                        "guide.watch", "guide.remind.cancel", "record.stop"),
+                List.of("page.live", "page.guide", "page.recordings", "live.mute", "live.subtitles",
+                        "live.full-screen", "guide.remind", "record"),
+                List.of("page.live", "page.guide", "page.recordings", "live.mute", "live.subtitles",
+                        "live.full-screen", "guide.remind.cancel", "record.stop"),
+                List.of("page.live", "page.guide", "page.recordings", "recordings.play", "recordings.folder",
+                        "record.stop", "recordings.remove"),
+                List.of("page.live", "page.guide", "page.recordings", "recordings.play", "recordings.folder",
+                        "record.cancel", "recordings.remove"),
                 List.of("reminder.watch", "reminder.dismiss"));
         for (String language : List.of("en", "de", "fr", "es", "it")) {
             Messages m = Messages.load(AmadeTvApplication.class, Texts.bundle(), Locale.of(language));

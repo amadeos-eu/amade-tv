@@ -5,7 +5,9 @@ import static eu.amadeos.commons.i18n.Texts.tr;
 import eu.amadeos.apps.tv.domain.Broadcast;
 import eu.amadeos.apps.tv.domain.Channel;
 import eu.amadeos.apps.tv.domain.PlayerState;
+import eu.amadeos.apps.tv.domain.Recording;
 import eu.amadeos.apps.tv.domain.Schedule;
+import eu.amadeos.apps.tv.ui.guide.GuidePage;
 import eu.amadeos.apps.tv.ui.main.LogoSource;
 import eu.amadeos.commons.i18n.Mnemonics;
 
@@ -20,6 +22,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -32,6 +35,8 @@ public final class LivePage extends JPanel {
         void watch(Channel c);
 
         void toggleReminder(Broadcast b);
+
+        void toggleRecording(Broadcast b);
     }
 
     private static final DateTimeFormatter TIME = DateTimeFormatter.ofPattern("HH:mm");
@@ -43,6 +48,7 @@ public final class LivePage extends JPanel {
     final JList<Broadcast> today = new JList<>(todayModel);
     final TitledBorder todayBorder = new TitledBorder("");
     final JButton remind = new JButton();
+    final JButton record = new JButton();
     final LiveControls controls;
     final JScrollPane channelScroll;
     final JPanel todayPanel;
@@ -53,6 +59,7 @@ public final class LivePage extends JPanel {
     private Instant now = Instant.now();
     private Channel playing;
     private Predicate<Broadcast> reminded = b -> false;
+    private Function<Broadcast, Recording.Status> recording = b -> null;
 
     public LivePage(Actions actions, ZoneId zone, LogoSource logos) {
         super(new BorderLayout());
@@ -97,8 +104,17 @@ public final class LivePage extends JPanel {
             Broadcast b = today.getSelectedValue();
             if (b != null) toggleReminder(b);
         });
-        JPanel remindRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        record.addActionListener(e -> {
+            Broadcast b = today.getSelectedValue();
+            if (b != null) {
+                actions.toggleRecording(b);
+                today.repaint();
+                updateRemindButton();
+            }
+        });
+        JPanel remindRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 4, 0));
         remindRow.add(remind);
+        remindRow.add(record);
         todayPanel = new JPanel(new BorderLayout(0, 4));
         todayPanel.setBorder(BorderFactory.createCompoundBorder(todayBorder, new EmptyBorder(2, 4, 4, 4)));
         todayPanel.add(new JScrollPane(today), BorderLayout.CENTER);
@@ -147,6 +163,13 @@ public final class LivePage extends JPanel {
 
     public void setReminded(Predicate<Broadcast> reminded) {
         this.reminded = reminded;
+    }
+
+    /** The status of a program's planned or running recording, or null. */
+    public void setRecording(Function<Broadcast, Recording.Status> recording) {
+        this.recording = recording;
+        today.repaint();
+        updateRemindButton();
     }
 
     public void showPlayer(PlayerState s, String audioTrack) {
@@ -206,6 +229,8 @@ public final class LivePage extends JPanel {
         boolean future = b != null && b.start().isAfter(now);
         remind.setEnabled(future);
         Mnemonics.apply(remind, tr(future && reminded.test(b) ? "guide.remind.cancel" : "guide.remind"));
+        record.setEnabled(b != null && b.end().isAfter(now));
+        Mnemonics.apply(record, tr(GuidePage.recordKey(b == null ? null : recording.apply(b))));
     }
 
     /** "20:15  Tatort  (on air)" with the running item in bold. */
@@ -217,6 +242,7 @@ public final class LivePage extends JPanel {
             Broadcast b = (Broadcast) value;
             String tag = b.isRunningAt(now) ? "  ·  " + tr("live.today.on-air")
                     : reminded.test(b) ? "  ★" : "";
+            if (recording.apply(b) != null) tag += "  ●";
             setText(TIME.format(b.start().atZone(zone)) + "   " + b.fullTitle() + tag);
             setFont(getFont().deriveFont(b.isRunningAt(now) ? Font.BOLD : Font.PLAIN));
             setForeground(isSelected ? list.getSelectionForeground() : b.end().isBefore(now)

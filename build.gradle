@@ -30,7 +30,7 @@ repositories {
 dependencies {
     // Theme, Motif look, start-up, languages and XDG helpers shared by all amadeOS applications.
     // With ../amade-commons checked out, settings.gradle builds that checkout instead (composite build).
-    implementation 'com.github.datazuul:amade-commons:4986e7bedb'
+    implementation 'com.github.datazuul:amade-commons:f4d7fa7589'
 
     // libmpv (and through it FFmpeg) via JNA: no JNI code to build.
     implementation 'net.java.dev.jna:jna:5.14.0'
@@ -47,6 +47,8 @@ test {
     // Tests compare English texts, whatever the language of the build machine.
     systemProperty 'user.language', 'en'
     systemProperty 'user.country', 'US'
+    // File names with umlauts, as on the desktop, also where the build machine runs with LANG=C.
+    environment 'LC_ALL', 'C.UTF-8'
 }
 
 // mpv options and the JNA library path for `gradle run`, e.g. ./gradlew run -Dmpv.ao=null (see MpvPlayer).
@@ -165,16 +167,16 @@ Version: ${debVersion}
 Section: video
 Priority: optional
 Architecture: all
-Depends: openjdk-25-jre | java-runtime (>= 25), libmpv2
+Depends: openjdk-25-jre | java-runtime (>= 25), libmpv2, ffmpeg
 Recommends: yt-dlp
 Maintainer: amadeOS Project <developers@datazuul.com>
 Description: Live TV and program guide for amadeOS
  Watches the live streams of the German-language public broadcasters
  (Das Erste, ZDF, ARTE, 3sat, KiKA, phoenix, the ARD regional channels
  and more) with today's schedule, a program guide for all channels and
- reminders. Optional groups add channels from Austria and Switzerland,
+ reminders, and records programs to ~/Videos/TV. Optional groups add channels from Austria and Switzerland,
  international channels and free German private channels.
- Playback is done by libmpv. Only freely available streams
+ Playback is done by libmpv, recording by ffmpeg. Only freely available streams
  are used; nothing is unlocked that a broadcaster limits to a country.
 """
 

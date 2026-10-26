@@ -6,6 +6,7 @@ import com.google.inject.Scopes;
 import com.google.inject.Singleton;
 import eu.amadeos.apps.tv.repository.ChannelCatalog;
 import eu.amadeos.apps.tv.service.net.KodinerdsList;
+import eu.amadeos.apps.tv.repository.RecordingStore;
 import eu.amadeos.apps.tv.repository.ReminderStore;
 import eu.amadeos.apps.tv.repository.TvPreferences;
 import eu.amadeos.apps.tv.service.guide.ArdProgramSource;
@@ -15,11 +16,14 @@ import eu.amadeos.apps.tv.service.guide.ZdfEpgSource;
 import eu.amadeos.apps.tv.service.logo.LogoCache;
 import eu.amadeos.apps.tv.service.mpv.MpvPlayer;
 import eu.amadeos.apps.tv.service.net.HttpWeb;
+import eu.amadeos.apps.tv.service.record.Recorder;
 import eu.amadeos.apps.tv.service.net.Web;
 import eu.amadeos.apps.tv.ui.main.ChannelTile;
 import eu.amadeos.apps.tv.ui.main.MainPresenter;
 import eu.amadeos.commons.app.AppInfo;
 import eu.amadeos.commons.config.AppDirectories;
+import eu.amadeos.commons.config.XdgDirectories;
+import eu.amadeos.commons.process.CommandRunner;
 
 import java.time.Clock;
 import java.util.List;
@@ -60,6 +64,15 @@ public final class TvModule extends AbstractModule {
     ReminderStore reminders(AppDirectories dirs, Clock clock) {
         return new ReminderStore(dirs.config(), clock.instant());
     }
+
+    // --8<-- [start:recorder]
+    @Provides
+    @Singleton
+    Recorder recorder(AppDirectories dirs, XdgDirectories xdg, Clock clock) {
+        return new Recorder(new RecordingStore(dirs.config()), CommandRunner.system(), xdg.videos().resolve("TV"),
+                clock.getZone());
+    }
+    // --8<-- [end:recorder]
 
     @Provides
     @Singleton

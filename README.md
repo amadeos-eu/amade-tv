@@ -5,8 +5,8 @@ public broadcasters with a program guide, in a Motif/CDE-styled window. Playback
 [libmpv](https://mpv.io), embedded into the Swing window; the rest is Java on
 [amade-commons](https://github.com/datazuul/amade-commons) like the other amadeOS applications.
 
-Status: **step 1, Live and Guide.** Step 2 adds the library of the broadcasters' on-demand
-programs, downloads and a watch-later list.
+Status: **Live, Guide and Recordings.** The library of the broadcasters' on-demand programs,
+downloads and a watch-later list follow.
 
 Platforms: **Linux only for now** (amadeOS, Debian and Ubuntu with `libmpv2`). The code would load
 `libmpv-2.dll` on Windows, but no Windows installer is built: it would have to bundle libmpv and its
@@ -17,9 +17,14 @@ FFmpeg libraries with jpackage, which amade-tv does not do yet. The CI builds on
 | Page | What it shows | Notes |
 |------|---------------|-------|
 | **Live** | channel list with logos and the program running now, the player, today's schedule of the channel | pause and go back up to 10 minutes, *Back to live*; mute, volume, subtitles, audio track (original language, audio description), full screen (F11) |
-| **Guide** | all channels on a time line, one day at a time | *Now*, *Prime Time 20:15*, previous/next day, search; a program's details with *Watch Live* and *Remind Me* |
+| **Guide** | all channels on a time line, one day at a time | *Now*, *Prime Time 20:15*, previous/next day, search; a program's details with *Watch Live*, *Remind Me* and *Record* |
+| **Recordings** | planned, running and finished recordings | size while recording; *Play*, *Show in Folder*, *Stop Recording*, *Remove* (optionally with the file) |
 
-Reminders pop up when a program starts and offer to switch to it. The channel list has the 11 main
+Reminders pop up when a program starts and offer to switch to it. *Record* (in the guide or in
+today's list on the Live page) saves a program from the live stream into `~/Videos/TV` (the desktop's
+videos folder) as a Matroska file: from two minutes before to five minutes after the program, copied
+as it is with `ffmpeg -c copy`, so it costs almost no processor time. TV records only while it is
+open; a recording whose time passed while TV was closed is marked as missed. The channel list has the 11 main
 channels; four groups in the *Channels* menu add more, each switched on by itself: the ARD regional
 channels and the Bundestag channels, channels from Austria and Switzerland, international channels
 (news and culture from Europe and beyond), and free German private channels. Only the main and
@@ -54,19 +59,21 @@ which Video uses too.
 | Package | Content |
 |---------|---------|
 | `bootstrap` | `AmadeTvApplication` (entry point), `TvModule` |
-| `domain` | `Channel`, `ChannelGroup`, `Broadcast`, `Schedule` (immutable, per channel), `Reminder`, `PlayerState` |
-| `repository` | `ChannelCatalog` (`channels.json` + stream addresses from Zapp and Kodinerds), `TvPreferences`, `ReminderStore` |
+| `domain` | `Channel`, `ChannelGroup`, `Broadcast`, `Schedule` (immutable, per channel), `Reminder`, `Recording`, `PlayerState` |
+| `repository` | `ChannelCatalog` (`channels.json` + stream addresses from Zapp and Kodinerds), `TvPreferences`, `ReminderStore`, `RecordingStore` |
 | `service.guide` | `GuideService` (cache, loading, listeners), `ArdProgramSource`, `ZdfEpgSource`, `ZappService` |
 | `service.logo` | `LogoCache`: downloads, turns, crops and scales the channel logos |
 | `service.mpv` | `MpvPlayer`: the player state on top of amade-commons' `Mpv`: live time shift, volume, tracks |
+| `service.record` | `Recorder`: starts due recordings with ffmpeg (through the commons `CommandRunner`), follows their progress, stops them |
 | `service.net` | `Web` and its `HttpWeb` implementation (the tests use a fake), `KodinerdsList` |
 | `ui.live` | `LivePage`, `ChannelCell`, `LiveControls`, `VideoCanvas` |
 | `ui.guide` | `GuidePage`, `GuideGrid`, `TimelineLayout` |
+| `ui.recordings` | `RecordingsPage` |
 | `ui.main` | `MainWindow` (menus, sidebar, pages), `MainPresenter`, `ChannelTile` |
 
 ## Building and testing
 
-Requirements: Java 25 JDK; `libmpv2` to play; `dpkg-deb` for the Debian package.
+Requirements: Java 25 JDK; `libmpv2` to play, `ffmpeg` to record; `dpkg-deb` for the Debian package.
 
 `amade-commons` is taken from JitPack. If it is checked out next to this repository
 (`../amade-commons`), Gradle builds that checkout instead.
@@ -78,15 +85,15 @@ xvfb-run -a ./gradlew test     # unit and page tests (no libmpv or network neede
 ./gradlew installToAmadeOs     # copy the .deb into ../amadeos/config/packages.chroot/
 ```
 
-The Debian package depends on `libmpv2`. It installs `amade-tv.desktop`
+The Debian package depends on `libmpv2` and `ffmpeg`. It installs `amade-tv.desktop`
 (`Categories=AudioVideo;Video;TV;Player;`), so the amadeOS front panel lists it in the Sound & Video
 drawer.
 
 ## Roadmap
 
-1. Live and Guide (this version)
-2. Library: the on-demand programs of the broadcasters, search, downloads, watch later
-3. Handbook chapters (the mpv binding is in amade-commons now)
+1. Live and Guide
+2. Recordings from the live streams (this version)
+3. Library: the on-demand programs of the broadcasters, search, downloads, watch later
 
 ## License
 
