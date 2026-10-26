@@ -1,6 +1,7 @@
 package eu.amadeos.apps.tv.service.net;
 
 import eu.amadeos.commons.app.AppInfo;
+import eu.amadeos.commons.net.Network;
 
 import java.io.IOException;
 import java.net.URI;
@@ -18,7 +19,7 @@ import java.util.Map;
 public final class HttpWeb implements Web {
     private static final Duration TIMEOUT = Duration.ofSeconds(20);
 
-    private final HttpClient client = HttpClient.newBuilder()
+    private final HttpClient client = Network.proxy().httpClient()
             .connectTimeout(Duration.ofSeconds(10))
             .followRedirects(HttpClient.Redirect.NORMAL)
             .build();
