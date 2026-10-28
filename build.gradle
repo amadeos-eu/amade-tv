@@ -51,9 +51,10 @@ test {
     environment 'LC_ALL', 'C.UTF-8'
 }
 
-// mpv options and the JNA library path for `gradle run`, e.g. ./gradlew run -Dmpv.ao=null (see MpvPlayer).
+// mpv options, the JNA library path and the TV service for `gradle run`, e.g. ./gradlew run -Dmpv.ao=null (see
+// MpvPlayer) or -Damade.tv.api=http://localhost:8085/tv/v1/ (see FilmLibrary).
 tasks.named('run') {
-    systemProperties System.properties.findAll { k, v -> k.toString().startsWith('mpv.') || k == 'jna.library.path' }
+    systemProperties System.properties.findAll { k, v -> k.toString().startsWith('mpv.') || k in ['jna.library.path', 'amade.tv.api'] }
 }
 
 jar {

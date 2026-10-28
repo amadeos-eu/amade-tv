@@ -13,6 +13,7 @@ import eu.amadeos.apps.tv.service.guide.ArdProgramSource;
 import eu.amadeos.apps.tv.service.guide.GuideService;
 import eu.amadeos.apps.tv.service.guide.ZappService;
 import eu.amadeos.apps.tv.service.guide.ZdfEpgSource;
+import eu.amadeos.apps.tv.service.library.FilmLibrary;
 import eu.amadeos.apps.tv.service.logo.LogoCache;
 import eu.amadeos.apps.tv.service.mpv.MpvPlayer;
 import eu.amadeos.apps.tv.service.net.HttpWeb;
@@ -92,6 +93,12 @@ public final class TvModule extends AbstractModule {
     @Singleton
     GuideService guide(Web web, ZappService zapp, AppDirectories dirs, Clock clock) {
         return new GuideService(List.of(new ArdProgramSource(web), new ZdfEpgSource(web)), zapp, dirs.cache(), clock);
+    }
+
+    @Provides
+    @Singleton
+    FilmLibrary library(Web web) {
+        return new FilmLibrary(web);
     }
 
     @Provides

@@ -190,8 +190,10 @@ class LivePageTest {
             assertFalse(p.channelScroll.isVisible());
             assertFalse(p.controls.isVisible());
             assertTrue(p.video.isVisible());
+            assertEquals(new Insets(0, 0, 0, 0), p.right.getInsets(), "no margin around the picture");
             p.setChromeVisible(true);
             assertTrue(p.controls.isVisible());
+            assertEquals(new Insets(6, 6, 6, 6), p.right.getInsets());
         });
     }
 }
