@@ -52,6 +52,8 @@ public final class LivePage extends JPanel {
     final LiveControls controls;
     final JScrollPane channelScroll;
     final JPanel todayPanel;
+    /** The picture with the controls and today's list; its margin goes in full screen. */
+    final JPanel right = new JPanel(new BorderLayout(0, 6));
     private final ChannelCell cell;
     private final ZoneId zone;
     private final Actions actions;
@@ -124,7 +126,6 @@ public final class LivePage extends JPanel {
         JPanel picture = new JPanel(new BorderLayout());
         picture.add(video, BorderLayout.CENTER);
         picture.add(controls, BorderLayout.SOUTH);
-        JPanel right = new JPanel(new BorderLayout(0, 6));
         right.setBorder(new EmptyBorder(6, 6, 6, 6));
         right.add(picture, BorderLayout.CENTER);
         right.add(todayPanel, BorderLayout.SOUTH);
@@ -180,11 +181,12 @@ public final class LivePage extends JPanel {
         });
     }
 
-    /** Everything but the picture, hidden in full screen. */
+    /** Everything but the picture, hidden in full screen, and the margin around it. */
     public void setChromeVisible(boolean visible) {
         channelScroll.setVisible(visible);
         todayPanel.setVisible(visible);
         controls.setVisible(visible);
+        right.setBorder(visible ? new EmptyBorder(6, 6, 6, 6) : null);
         revalidate();
     }
 
