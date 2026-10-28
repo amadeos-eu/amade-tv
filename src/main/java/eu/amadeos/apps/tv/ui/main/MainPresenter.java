@@ -8,6 +8,7 @@ import com.google.inject.Inject;
 import com.sun.jna.Native;
 import eu.amadeos.apps.tv.domain.Broadcast;
 import eu.amadeos.apps.tv.domain.Channel;
+import eu.amadeos.apps.tv.domain.Film;
 import eu.amadeos.apps.tv.domain.PlayerState;
 import eu.amadeos.apps.tv.domain.Recording;
 import eu.amadeos.apps.tv.domain.Reminder;
@@ -16,10 +17,12 @@ import eu.amadeos.apps.tv.repository.ReminderStore;
 import eu.amadeos.apps.tv.repository.TvPreferences;
 import eu.amadeos.apps.tv.service.guide.GuideService;
 import eu.amadeos.apps.tv.service.guide.ZappService;
+import eu.amadeos.apps.tv.service.library.FilmLibrary;
 import eu.amadeos.apps.tv.service.logo.LogoCache;
 import eu.amadeos.apps.tv.service.mpv.MpvPlayer;
 import eu.amadeos.apps.tv.service.record.Recorder;
 import eu.amadeos.apps.tv.ui.guide.GuidePage;
+import eu.amadeos.apps.tv.ui.library.LibraryPage;
 import eu.amadeos.apps.tv.ui.live.LivePage;
 import eu.amadeos.apps.tv.ui.recordings.RecordingsPage;
 import eu.amadeos.commons.desktop.DesktopLauncher;
@@ -41,6 +44,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +57,8 @@ import java.util.concurrent.RejectedExecutionException;
  * program data arrive through the EDT executor. A timer ticks every 20 seconds: progress bars, reminders,
  * recordings that are due, and every few minutes what runs now on channels without a day schedule.
  */
-public final class MainPresenter implements LivePage.Actions, GuidePage.Actions, RecordingsPage.Actions {
+public final class MainPresenter implements LivePage.Actions, GuidePage.Actions, RecordingsPage.Actions,
+        LibraryPage.Actions {
     private static final Logger LOG = LoggerFactory.getLogger(MainPresenter.class);
     static final int TICK_MILLIS = 20_000;
     static final Duration NOW_REFRESH = Duration.ofMinutes(5);
@@ -69,6 +74,7 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions,
     private final ReminderStore reminders;
     private final TvPreferences preferences;
     private final Recorder recorder;
+    private final FilmLibrary library;
     private final DesktopLauncher desktop;
     private final EdtExecutor edt;
     private final ExecutorService executor;
@@ -76,6 +82,13 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions,
     private final ZoneId zone;
     private MainWindow window;
     private Channel playing;
+    /** The film of the library that plays instead of a channel, or null. */
+    private Film film;
+    private String libraryText = "";
+    private final List<Film> libraryFilms = new ArrayList<>();
+    private FilmLibrary.Page libraryPage;
+    /** Counts the searches, so that the answer to an older one is dropped. */
+    private int librarySearch;
     private Timer timer;
     private Instant lastNowRefresh = Instant.EPOCH;
     private LocalDate today;
@@ -84,7 +97,7 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions,
     @Inject
     public MainPresenter(MpvPlayer player, ChannelCatalog catalog, GuideService guide, ZappService zapp,
                          KodinerdsList kodinerds, LogoCache logos, ReminderStore reminders, TvPreferences preferences,
-                         Recorder recorder, DesktopLauncher desktop, EdtExecutor edt, ExecutorService executor,
+                         Recorder recorder, FilmLibrary library, DesktopLauncher desktop, EdtExecutor edt, ExecutorService executor,
                          Clock clock) {
         this.player = player;
         this.catalog = catalog;
@@ -95,6 +108,7 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions,
         this.reminders = reminders;
         this.preferences = preferences;
         this.recorder = recorder;
+        this.library = library;
         this.desktop = desktop;
         this.edt = edt;
         this.executor = executor;
@@ -112,7 +126,7 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions,
         live.setRecording(this::recordingStatus);
         guidePage.setRecording(this::recordingStatus);
         RecordingsPage recordingsPage = new RecordingsPage(this, zone, recorder.folder());
-        window = new MainWindow(this, live, guidePage, recordingsPage);
+        window = new MainWindow(this, live, guidePage, recordingsPage, new LibraryPage(this, zone));
         preferences.groups().forEach(g -> window.groups.get(g).setSelected(true));
         window.addWindowListener(new WindowAdapter() {
             @Override
@@ -260,6 +274,7 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions,
     public void watch(Channel c) {
         if (c == null) return;
         playing = c;
+        film = null;
         preferences.setLastChannel(c.id());
         window.live.setPlaying(c);
         updateTitle();
@@ -393,6 +408,62 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions,
         });
     }
 
+    // ---- library ---------------------------------------------------------------------------------
+
+    /** On the first visit, the newest films. */
+    void libraryShown() {
+        if (!window.library.searched()) search("");
+        window.library.focusFind();
+    }
+
+    @Override
+    public void search(String text) {
+        libraryText = text;
+        libraryFilms.clear();
+        libraryPage = null;
+        loadFilms(0);
+    }
+
+    @Override
+    public void moreFilms() {
+        if (libraryPage != null && libraryPage.hasMore()) loadFilms(libraryPage.page() + 1);
+    }
+
+    // --8<-- [start:load-films]
+    private void loadFilms(int page) {
+        int search = ++librarySearch;
+        String text = libraryText;
+        window.library.setLoading();
+        background(() -> {
+            try {
+                FilmLibrary.Page result = library.search(text, page);
+                edt.execute(() -> {
+                    if (search != librarySearch) return;
+                    libraryPage = result;
+                    libraryFilms.addAll(result.films());
+                    window.library.setFilms(libraryFilms, result.total(), result.hasMore());
+                });
+            } catch (IOException e) {
+                LOG.info("Library search failed: {}", e.getMessage());
+                edt.execute(() -> {
+                    if (search == librarySearch) window.library.setFailed(e.getMessage());
+                });
+            }
+        });
+    }
+    // --8<-- [end:load-films]
+
+    /** Plays the film on the Live page, in the same player as the channels. */
+    @Override
+    public void play(Film f) {
+        film = f;
+        playing = null;
+        window.live.setPlaying(null);
+        window.showPage(MainWindow.LIVE);
+        updateTitle();
+        player.open(f.videoUrl(), f.fullTitle());
+    }
+
     // ---- player ----------------------------------------------------------------------------------
 
     private void showPlayer(PlayerState s) {
@@ -402,6 +473,10 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions,
     }
 
     private void updateTitle() {
+        if (film != null) {
+            window.setTitle(film.fullTitle() + " - " + tr("app.title"));
+            return;
+        }
         if (playing == null) {
             window.setTitle(tr("app.title"));
             return;
@@ -413,7 +488,8 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions,
     @Override
     public void togglePause() {
         if (player.state().status() == PlayerState.Status.IDLE || player.state().status() == PlayerState.Status.FAILED) {
-            if (playing != null) watch(playing);
+            if (film != null) play(film);
+            else if (playing != null) watch(playing);
             return;
         }
         player.togglePause();
@@ -428,7 +504,7 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions,
     /** Back to the live edge: the stream is opened again, which is what every HLS player does. */
     @Override
     public void toLive() {
-        if (playing != null && player.state().hasMedia()) watch(playing);
+        if (film == null && playing != null && player.state().hasMedia()) watch(playing);
     }
     // --8<-- [end:to-live]
 

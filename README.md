@@ -5,8 +5,8 @@ public broadcasters with a program guide, in a Motif/CDE-styled window. Playback
 [libmpv](https://mpv.io), embedded into the Swing window; the rest is Java on
 [amade-commons](https://github.com/datazuul/amade-commons) like the other amadeOS applications.
 
-Status: **Live, Guide and Recordings.** The library of the broadcasters' on-demand programs,
-downloads and a watch-later list follow.
+Status: **Live, Guide, Recordings, and the first part of the Library** (search and play the
+on-demand films). Downloads, a watch-later list and following a topic follow.
 
 Platforms: **Linux only for now** (amadeOS, Debian and Ubuntu with `libmpv2`). The code would load
 `libmpv-2.dll` on Windows, but no Windows installer is built: it would have to bundle libmpv and its
@@ -19,6 +19,7 @@ FFmpeg libraries with jpackage, which amade-tv does not do yet. The CI builds on
 | **Live** | channel list with logos and the program running now, the player, today's schedule of the channel | pause and go back up to 10 minutes, *Back to live*; mute, volume, subtitles, audio track (original language, audio description), full screen (F11) |
 | **Guide** | all channels on a time line, one day at a time | *Now*, *Prime Time 20:15*, previous/next day, search; a program's details with *Watch Live*, *Remind Me* and *Record* |
 | **Recordings** | planned, running and finished recordings | size while recording; *Play*, *Show in Folder*, *Stop Recording*, *Remove* (optionally with the file) |
+| **Library** | the films of the broadcasters' media libraries: newest first, or the best hits for the words searched for | 50 at a time, *Show More*; channel, date, length, how long a film stays and its description; *Play* (or a double click) plays it on the Live page |
 
 Reminders pop up when a program starts and offer to switch to it. *Record* (in the guide or in
 today's list on the Live page) saves a program from the live stream into `~/Videos/TV` (the desktop's
@@ -38,6 +39,7 @@ channels stream through YouTube and are shown only when `yt-dlp` is installed. T
 | Stream addresses, program running now | [Zapp](https://github.com/mediathekview/zapp-backend) API of the MediathekView project | `api.zapp.mediathekview.de/v1/channelInfoList`, `/shows/<channel>`; the built-in list in `channels.json` is the fallback |
 | ARD channels' schedule | ARD program API | `programm-api.ard.de/program/api/program?day=` |
 | ZDF channels' schedule (ZDF, 3sat, ARTE, phoenix, KiKA, ZDFneo, ZDFinfo) | the ZDF EPG behind zdf.de | GraphQL, with the API token read from the zdf.de live TV page |
+| Library films | the TV service of amadeOS, [amadeos-tv-api](https://github.com/datazuul/amadeos-tv-api), which collects the media libraries once for everyone (ARD for now) | `api.amadeos.eu/tv/v1/films?q=&page=&size=`; the videos themselves come from the broadcaster's server |
 | Channel logos, stream addresses of the extra groups | [Kodinerds IPTV lists](https://github.com/jnk22/kodinerds-iptv) | `iptv/clean/clean_tv.m3u`; logos downloaded on first use, never shipped in the package |
 
 Schedules are cached in `~/.cache/amadeos/tv/guide/` (6 hours; past days stay until they are a week
@@ -65,10 +67,12 @@ which Video uses too.
 | `service.logo` | `LogoCache`: downloads, turns, crops and scales the channel logos |
 | `service.mpv` | `MpvPlayer`: the player state on top of amade-commons' `Mpv`: live time shift, volume, tracks |
 | `service.record` | `Recorder`: starts due recordings with ffmpeg (through the commons `CommandRunner`), follows their progress, stops them |
+| `service.library` | `FilmLibrary`: searches the films of the TV service |
 | `service.net` | `Web` and its `HttpWeb` implementation (the tests use a fake), `KodinerdsList` |
 | `ui.live` | `LivePage`, `ChannelCell`, `LiveControls`, `VideoCanvas` |
 | `ui.guide` | `GuidePage`, `GuideGrid`, `TimelineLayout` |
 | `ui.recordings` | `RecordingsPage` |
+| `ui.library` | `LibraryPage` |
 | `ui.main` | `MainWindow` (menus, sidebar, pages), `MainPresenter`, `ChannelTile` |
 
 ## Building and testing
@@ -81,6 +85,7 @@ Requirements: Java 25 JDK; `libmpv2` to play, `ffmpeg` to record; `dpkg-deb` for
 ```bash
 xvfb-run -a ./gradlew test     # unit and page tests (no libmpv or network needed; the pages need a display)
 ./gradlew run                  # start TV
+./gradlew run -Damade.tv.api=http://localhost:8085/tv/v1/   # with a TV service started locally
 ./gradlew deb                  # build/distributions/amade-tv_0.0.0~dev.0_all.deb
 ./gradlew installToAmadeOs     # copy the .deb into ../amadeos/config/packages.chroot/
 ```
@@ -92,8 +97,9 @@ drawer.
 ## Roadmap
 
 1. Live and Guide
-2. Recordings from the live streams (this version)
-3. Library: the on-demand programs of the broadcasters, search, downloads, watch later
+2. Recordings from the live streams
+3. Library: the on-demand programs of the broadcasters; search and play (this version), then downloads,
+   watch later and following a topic
 
 ## License
 

@@ -1,0 +1,11 @@
+{"total":51,"page":0,"size":50,"films":[
+ {"id":"6f1c2a10-0000-4000-8000-000000000001","source":"ard","channel":"Das Erste","topic":"Tatort","title":"Tod am Deich",
+  "description":"Ein Toter am Deich.","publishedAt":"2026-10-25T19:15:00Z","durationSeconds":5310,
+  "availableUntil":"2026-11-24T22:59:00Z","geo":"DE","websiteUrl":"https://www.ardmediathek.de/video/x",
+  "subtitleUrl":"https://example.org/t.vtt","videoSd":"https://example.org/t-sd.mp4","videoHd":"https://example.org/t-hd.mp4",
+  "videoHls":"https://example.org/t.m3u8","audioDescription":false,"signLanguage":false},
+ {"id":"6f1c2a10-0000-4000-8000-000000000002","source":"ard","channel":"NDR","topic":"","title":"Nordseereport",
+  "description":null,"publishedAt":null,"durationSeconds":null,"availableUntil":null,"geo":null,"websiteUrl":null,
+  "subtitleUrl":null,"videoSd":"https://example.org/n-sd.mp4","videoHd":null,"videoHls":null,
+  "audioDescription":true,"signLanguage":false}
+]}
