@@ -1,9 +1,9 @@
 # amade-tv
 
-**TV** for [amadeOS](https://github.com/datazuul/amadeos): the live streams of the German-language
+**TV** for [amadeOS](https://github.com/amadeos-eu/amadeos): the live streams of the German-language
 public broadcasters with a program guide, in a Motif/CDE-styled window. Playback is done by
 [libmpv](https://mpv.io), embedded into the Swing window; the rest is Java on
-[amade-commons](https://github.com/datazuul/amade-commons) like the other amadeOS applications.
+[amade-commons](https://github.com/amadeos-eu/amade-commons) like the other amadeOS applications.
 
 Status: **Live, Guide, Recordings, and the first part of the Library** (search and play the
 on-demand films). Downloads, a watch-later list and following a topic follow.
@@ -39,7 +39,7 @@ channels stream through YouTube and are shown only when `yt-dlp` is installed. T
 | Stream addresses, program running now | [Zapp](https://github.com/mediathekview/zapp-backend) API of the MediathekView project | `api.zapp.mediathekview.de/v1/channelInfoList`, `/shows/<channel>`; the built-in list in `channels.json` is the fallback |
 | ARD channels' schedule | ARD program API | `programm-api.ard.de/program/api/program?day=` |
 | ZDF channels' schedule (ZDF, 3sat, ARTE, phoenix, KiKA, ZDFneo, ZDFinfo) | the ZDF EPG behind zdf.de | GraphQL, with the API token read from the zdf.de live TV page |
-| Library films | the TV service of amadeOS, [amadeos-tv-api](https://github.com/datazuul/amadeos-tv-api), which collects the media libraries once for everyone (ARD for now) | `api.amadeos.eu/tv/v1/films?q=&page=&size=`; the videos themselves come from the broadcaster's server |
+| Library films | the TV service of amadeOS, [amadeos-tv-api](https://github.com/amadeos-eu/amadeos-tv-api), which collects the media libraries once for everyone (ARD for now) | `api.amadeos.eu/tv/v1/films?q=&page=&size=`; the videos themselves come from the broadcaster's server |
 | Channel logos, stream addresses of the extra groups | [Kodinerds IPTV lists](https://github.com/jnk22/kodinerds-iptv) | `iptv/clean/clean_tv.m3u`; logos downloaded on first use, never shipped in the package |
 
 Schedules are cached in `~/.cache/amadeos/tv/guide/` (6 hours; past days stay until they are a week

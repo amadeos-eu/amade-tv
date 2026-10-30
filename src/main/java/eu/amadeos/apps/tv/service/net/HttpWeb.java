@@ -28,7 +28,7 @@ public final class HttpWeb implements Web {
     public HttpWeb(AppInfo app) {
         String version = HttpWeb.class.getPackage().getImplementationVersion();
         this.userAgent = app.id() + "/" + (version == null ? "dev" : version)
-                + " (+https://github.com/datazuul/amade-tv)";
+                + " (+https://github.com/amadeos-eu/amade-tv)";
     }
 
     @Override
