@@ -575,7 +575,7 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions,
     void about() {
         String version = player.isAvailable() ? "libmpv " + player.apiVersion() : tr("no-mpv.short");
         Icon icon = window.getIconImages().isEmpty() ? null : new ImageIcon(window.getIconImages().get(0));
-        JOptionPane.showMessageDialog(window, tr("about.text", version) + "\nhttps://github.com/datazuul/amade-tv",
+        JOptionPane.showMessageDialog(window, tr("about.text", version) + "\nhttps://github.com/amadeos-eu/amade-tv",
                 Mnemonics.strip(tr("menu.about")), JOptionPane.INFORMATION_MESSAGE, icon);
     }
 

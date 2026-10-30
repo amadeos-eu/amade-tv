@@ -57,8 +57,8 @@
     <category>Player</category>
   </categories>
 
-  <url type="homepage">https://github.com/datazuul/amade-tv</url>
-  <url type="bugtracker">https://github.com/datazuul/amade-tv/issues</url>
+  <url type="homepage">https://github.com/amadeos-eu/amade-tv</url>
+  <url type="bugtracker">https://github.com/amadeos-eu/amade-tv/issues</url>
   <developer id="eu.amadeos">
     <name>amadeOS Project</name>
   </developer>
