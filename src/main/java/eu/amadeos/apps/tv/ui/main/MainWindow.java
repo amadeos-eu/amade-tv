@@ -7,6 +7,8 @@ import eu.amadeos.apps.tv.ui.guide.GuidePage;
 import eu.amadeos.apps.tv.ui.library.LibraryPage;
 import eu.amadeos.apps.tv.ui.live.LivePage;
 import eu.amadeos.apps.tv.ui.recordings.RecordingsPage;
+import eu.amadeos.commons.desktop.Notification;
+import eu.amadeos.commons.desktop.Notifications;
 import eu.amadeos.commons.i18n.Mnemonics;
 
 import javax.swing.*;
@@ -145,6 +147,40 @@ final class MainWindow extends JFrame {
         setSize(Math.max(getWidth(), 1100), Math.max(getHeight(), 720));
         setLocationRelativeTo(null);
     }
+
+    // --8<-- [start:remind]
+    /**
+     * A program the user asked to be reminded of starts: a desktop notification with <i>Watch</i>, which (like a
+     * click on the pop-up) switches to the channel and brings the window to the front. Without a notification
+     * service and without a system tray, the old dialog asks instead.
+     */
+    void remind(String program, String text, Runnable watch) {
+        Runnable watchNow = () -> {
+            watch.run();
+            if (getState() == Frame.ICONIFIED) setState(Frame.NORMAL);
+            toFront();
+        };
+        long id = Notifications.send(reminder(program, text, getIconImage(), watchNow));
+        if (id == 0 && !SystemTray.isSupported()) {
+            Toolkit.getDefaultToolkit().beep();
+            Object[] options = {Mnemonics.strip(tr("reminder.watch")), Mnemonics.strip(tr("reminder.dismiss"))};
+            int answer = JOptionPane.showOptionDialog(this, text, tr("reminder.title"), JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+            if (answer == 0) watchNow.run();
+        }
+    }
+
+    /** The notification of {@link #remind}; its actions run on the EDT. */
+    static Notification reminder(String program, String text, Image icon, Runnable watch) {
+        Runnable onEdt = () -> SwingUtilities.invokeLater(watch);
+        return Notification.of(program)
+                .body(Notification.escape(text))
+                .icon(icon)
+                .category("x-amade.tv.reminder")
+                .action("watch", Mnemonics.strip(tr("reminder.watch")), onEdt)
+                .defaultAction(onEdt);
+    }
+    // --8<-- [end:remind]
 
     void showPage(String name) {
         page = name;
