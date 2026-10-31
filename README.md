@@ -21,7 +21,7 @@ FFmpeg libraries with jpackage, which amade-tv does not do yet. The CI builds on
 | **Recordings** | planned, running and finished recordings | size while recording; *Play*, *Show in Folder*, *Stop Recording*, *Remove* (optionally with the file) |
 | **Library** | the films of the broadcasters' media libraries: newest first, or the best hits for the words searched for | 50 at a time, *Show More*; channel, date, length, how long a film stays and its description; *Play* (or a double click) plays it on the Live page |
 
-Reminders pop up when a program starts and offer to switch to it. *Record* (in the guide or in
+Reminders come as a desktop notification when a program starts; its *Watch* button switches to it. *Record* (in the guide or in
 today's list on the Live page) saves a program from the live stream into `~/Videos/TV` (the desktop's
 videos folder) as a Matroska file: from two minutes before to five minutes after the program, copied
 as it is with `ffmpeg -c copy`, so it costs almost no processor time. TV records only while it is

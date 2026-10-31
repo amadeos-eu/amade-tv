@@ -319,15 +319,11 @@ public final class MainPresenter implements LivePage.Actions, GuidePage.Actions,
     private void remind(Reminder r) {
         Channel c = catalog.byId(r.channelId());
         if (c == null) return;
-        Toolkit.getDefaultToolkit().beep();
         String text = tr("reminder.text", r.title(), c.name(), TIME.format(r.start().atZone(zone)));
-        Object[] options = {Mnemonics.strip(tr("reminder.watch")), Mnemonics.strip(tr("reminder.dismiss"))};
-        int answer = JOptionPane.showOptionDialog(window, text, tr("reminder.title"), JOptionPane.DEFAULT_OPTION,
-                JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-        if (answer == 0) {
+        window.remind(r.title(), text, () -> {
             window.showPage(MainWindow.LIVE);
             watch(c);
-        }
+        });
     }
 
     // ---- recordings ------------------------------------------------------------------------------
