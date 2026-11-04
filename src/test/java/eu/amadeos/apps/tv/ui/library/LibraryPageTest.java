@@ -66,7 +66,7 @@ class LibraryPageTest {
         page.table.setRowSelectionInterval(0, 0);
         assertTrue(page.play.isEnabled());
         assertEquals("Tatort: Tod am Deich", page.table.getValueAt(0, 0));
-        assertEquals("89 min", page.table.getValueAt(0, 3));
+        assertEquals("89 min", page.text(0, 3));
         page.play.doClick();
         page.more.doClick();
         assertEquals(List.of("search tatort", "play 1", "more"), actions.calls);
@@ -82,6 +82,38 @@ class LibraryPageTest {
         assertTrue(details.startsWith("Tatort: Tod am Deich\nDas Erste, "), details);
         assertTrue(details.contains("20:15, 89 min, sign language\nAvailable until "), details);
         assertTrue(details.endsWith("\n\nEin Toter am Deich."), details);
+    }
+
+    @Test
+    void columnsSortByTheirValues() {
+        Film shortOld = new Film("3", "ZDF", "", "Anfang", "", Instant.parse("2026-10-20T10:00:00Z"),
+                Duration.ofMinutes(9), null, "", "", "", "", "x", false, false);
+        Film longNew = new Film("4", "ARTE", "", "Zeit", "", Instant.parse("2026-10-30T10:00:00Z"),
+                Duration.ofMinutes(120), null, "", "", "", "", "x", false, false);
+        LibraryPage page = new LibraryPage(new Recorder(), BERLIN);
+        page.setFilms(List.of(TATORT, shortOld, longNew), 3, false);
+
+        page.sorter.toggleSortOrder(3);
+        assertEquals(List.of("3", "1", "4"), ids(page), "9 min before 89 min before 120 min");
+        page.sorter.toggleSortOrder(2);
+        assertEquals(List.of("3", "1", "4"), ids(page), "oldest first");
+        page.sorter.toggleSortOrder(2);
+        assertEquals(List.of("4", "1", "3"), ids(page), "newest first");
+        page.sorter.toggleSortOrder(1);
+        assertEquals(List.of("4", "1", "3"), ids(page), "ARTE, Das Erste, ZDF");
+
+        page.table.setRowSelectionInterval(0, 0);
+        assertSame(longNew, page.selected(), "the selected row is the film shown there");
+        page.setFilms(List.of(TATORT, shortOld, longNew, NO_VIDEO), 4, false);
+        assertSame(longNew, page.selected(), "more films keep the selection in the sorted table");
+    }
+
+    static List<String> ids(LibraryPage page) {
+        List<String> ids = new ArrayList<>();
+        for (int i = 0; i < page.table.getRowCount(); i++) {
+            ids.add(page.model.rows.get(page.table.convertRowIndexToModel(i)).id());
+        }
+        return ids;
     }
 
     @Test

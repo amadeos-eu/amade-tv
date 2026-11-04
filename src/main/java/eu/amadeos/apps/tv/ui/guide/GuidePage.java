@@ -26,7 +26,8 @@ import java.util.function.Predicate;
 
 /**
  * The program guide: a day of all channels in a time grid, with day buttons, "Now", "Prime time" and a
- * search that marks the hits; below, the selected item with Watch live, Remind me and Record.
+ * search that marks the hits; below, the selected item with Watch live, Remind me and Record. A long
+ * description scrolls inside its few lines, and Close (or Esc) puts the details away again.
  */
 public final class GuidePage extends JPanel {
     /** What the page asks of the presenter. */
@@ -49,6 +50,9 @@ public final class GuidePage extends JPanel {
     final JLabel findResult = new JLabel(" ");
     final JLabel detailTitle = new JLabel(" ");
     final JTextArea detailText = new JTextArea(3, 40);
+    final JScrollPane detailScroll = new JScrollPane(detailText, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+    final JButton close = new JButton("✕");
     final JButton watch = new JButton();
     final JButton remind = new JButton();
     final JButton record = new JButton();
@@ -129,6 +133,22 @@ public final class GuidePage extends JPanel {
         detailText.setOpaque(false);
         detailText.setBorder(null);
         detailText.setFont(UIManager.getFont("Label.font"));
+        // At most five lines high: a long description scrolls instead of pushing over the guide.
+        detailScroll.setBorder(null);
+        detailScroll.setOpaque(false);
+        detailScroll.getViewport().setOpaque(false);
+        detailScroll.setPreferredSize(new Dimension(100,
+                detailText.getFontMetrics(detailText.getFont()).getHeight() * 5 + 4));
+        close.setToolTipText(tr("guide.close"));
+        close.getAccessibleContext().setAccessibleName(tr("guide.close"));
+        close.addActionListener(e -> closeDetails());
+        grid.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke("ESCAPE"), "closeDetails");
+        grid.getActionMap().put("closeDetails", new AbstractAction() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                closeDetails();
+            }
+        });
         Mnemonics.apply(watch, tr("guide.watch"));
         watch.addActionListener(e -> Optional.ofNullable(grid.selected()).ifPresent(actions::watch));
         remind.addActionListener(e -> Optional.ofNullable(grid.selected()).ifPresent(b -> {
@@ -143,11 +163,12 @@ public final class GuidePage extends JPanel {
         }));
         JPanel text = new JPanel(new BorderLayout(0, 2));
         text.add(detailTitle, BorderLayout.NORTH);
-        text.add(detailText, BorderLayout.CENTER);
+        text.add(detailScroll, BorderLayout.CENTER);
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 4, 0));
         buttons.add(watch);
         buttons.add(remind);
         buttons.add(record);
+        buttons.add(close);
         JPanel details = new JPanel(new BorderLayout(10, 0));
         details.setBorder(new EmptyBorder(6, 8, 6, 8));
         details.add(text, BorderLayout.CENTER);
@@ -239,7 +260,15 @@ public final class GuidePage extends JPanel {
         return status == Recording.Status.PLANNED ? "record.cancel" : "record";
     }
 
+    /** Puts the details away: nothing is selected any more, only the hint line stays. */
+    void closeDetails() {
+        grid.select(null);
+    }
+
     private void showDetails(Broadcast b) {
+        detailScroll.setVisible(b != null);
+        close.setVisible(b != null);
+        revalidate();
         watch.setEnabled(b != null && b.isRunningAt(now));
         remind.setEnabled(b != null && b.start().isAfter(now));
         boolean set = b != null && reminded.test(b);

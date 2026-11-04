@@ -88,6 +88,29 @@ class GuidePageTest {
     }
 
     @Test
+    void aLongDescriptionScrollsAndCloseHidesTheDetails() throws Exception {
+        Broadcast markets = new Broadcast("das_erste", Instant.parse("2026-10-25T19:15:00Z"),
+                Instant.parse("2026-10-25T20:45:00Z"), "Märkte", "Venedig", "Ein Markt am Kanal. ".repeat(400));
+        Recorder r = new Recorder();
+        GuidePage p = page(r);
+        SwingUtilities.invokeAndWait(() -> {
+            p.setSize(900, 600);
+            p.grid.select(markets);
+            p.validate();
+            assertTrue(p.detailScroll.isVisible());
+            assertTrue(p.detailScroll.getHeight() < 150, "the details keep to a few lines: " + p.detailScroll.getHeight());
+            assertTrue(p.detailText.getPreferredSize().height > p.detailScroll.getViewport().getHeight(),
+                    "the rest of the text scrolls");
+
+            p.close.doClick();
+            assertNull(p.grid.selected());
+            assertFalse(p.detailScroll.isVisible());
+            assertFalse(p.close.isVisible());
+            assertEquals("Click a program for its details", p.detailTitle.getText());
+        });
+    }
+
+    @Test
     void clickingSelectsAndShowsTheDetails() throws Exception {
         Recorder r = new Recorder();
         GuidePage p = page(r);
