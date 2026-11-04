@@ -8,10 +8,13 @@ import eu.amadeos.commons.i18n.Mnemonics;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -20,7 +23,8 @@ import java.util.List;
 
 /**
  * The media libraries: a search over the films the broadcasters offer on demand, the hits in a table
- * (newest first without words, best first with them), the description of the selected film below, and
+ * (newest first without words, best first with them; a click on a column header sorts by that column,
+ * a third click goes back to the service's order), the description of the selected film below, and
  * Play, which shows the film on the Live page.
  */
 public final class LibraryPage extends JPanel {
@@ -43,6 +47,7 @@ public final class LibraryPage extends JPanel {
     final JButton more = new JButton();
     final Model model = new Model();
     final JTable table = new JTable(model);
+    final TableRowSorter<Model> sorter = new TableRowSorter<>(model);
     final JTextArea details = new JTextArea(6, 40);
     final JLabel status = new JLabel(" ");
     private final ZoneId zone;
@@ -63,6 +68,11 @@ public final class LibraryPage extends JPanel {
         add(top, BorderLayout.NORTH);
 
         table.setFillsViewportHeight(true);
+        sorter.setMaxSortKeys(1);
+        sorter.setSortsOnUpdates(true);
+        table.setRowSorter(sorter);
+        table.setDefaultRenderer(Instant.class, new FormattedRenderer(v -> when((Instant) v), SwingConstants.LEADING));
+        table.setDefaultRenderer(Duration.class, new FormattedRenderer(v -> minutes((Duration) v), SwingConstants.TRAILING));
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setRowHeight(table.getFontMetrics(table.getFont()).getHeight() + 8);
         table.getColumnModel().getColumn(0).setPreferredWidth(420);
@@ -117,8 +127,8 @@ public final class LibraryPage extends JPanel {
         Film before = selected();
         model.set(films);
         if (before != null && films.contains(before)) {
-            int i = films.indexOf(before);
-            table.setRowSelectionInterval(i, i);
+            int i = table.convertRowIndexToView(films.indexOf(before));
+            if (i >= 0) table.setRowSelectionInterval(i, i);
         }
         status.setText(!searched ? " " : total == 0 ? tr("library.none") : tr("library.count", films.size(), total));
         more.setVisible(hasMore);
@@ -133,7 +143,8 @@ public final class LibraryPage extends JPanel {
     }
 
     Film selected() {
-        int row = table.getSelectedRow();
+        int view = table.getSelectedRow();
+        int row = view < 0 ? -1 : table.convertRowIndexToModel(view);
         return row < 0 || row >= model.rows.size() ? null : model.rows.get(row);
     }
 
@@ -154,7 +165,7 @@ public final class LibraryPage extends JPanel {
     String details(Film f) {
         List<String> facts = new ArrayList<>();
         facts.add(f.channel());
-        if (f.publishedAt() != null) facts.add(when(f));
+        if (f.publishedAt() != null) facts.add(when(f.publishedAt()));
         if (f.duration() != null) facts.add(minutes(f.duration()));
         if (f.audioDescription()) facts.add(tr("library.audio-description"));
         if (f.signLanguage()) facts.add(tr("library.sign-language"));
@@ -167,8 +178,30 @@ public final class LibraryPage extends JPanel {
     }
     // --8<-- [end:details]
 
-    private String when(Film f) {
-        return DAY.format(f.publishedAt().atZone(zone)) + "  " + TIME.format(f.publishedAt().atZone(zone));
+    private String when(Instant t) {
+        return DAY.format(t.atZone(zone)) + "  " + TIME.format(t.atZone(zone));
+    }
+
+    /** The text a cell shows: the date or the length; the model keeps the value itself, so they sort right. */
+    String text(int viewRow, int column) {
+        Object v = table.getValueAt(viewRow, column);
+        if (v instanceof Instant t) return when(t);
+        if (v instanceof Duration d) return minutes(d);
+        return v == null ? "" : v.toString();
+    }
+
+    private static final class FormattedRenderer extends DefaultTableCellRenderer {
+        private final java.util.function.Function<Object, String> format;
+
+        FormattedRenderer(java.util.function.Function<Object, String> format, int alignment) {
+            this.format = format;
+            setHorizontalAlignment(alignment);
+        }
+
+        @Override
+        protected void setValue(Object value) {
+            setText(value == null ? "" : format.apply(value));
+        }
     }
 
     static String minutes(Duration d) {
@@ -204,13 +237,23 @@ public final class LibraryPage extends JPanel {
         }
 
         @Override
+        public Class<?> getColumnClass(int column) {
+            return switch (column) {
+                case 2 -> Instant.class;
+                case 3 -> Duration.class;
+                default -> String.class;
+            };
+        }
+
+        /** Title and channel as text, the time and the length as values (null when unknown). */
+        @Override
         public Object getValueAt(int row, int column) {
             Film f = rows.get(row);
             return switch (column) {
                 case 0 -> f.fullTitle();
                 case 1 -> f.channel();
-                case 2 -> f.publishedAt() == null ? "" : when(f);
-                default -> f.duration() == null ? "" : minutes(f.duration());
+                case 2 -> f.publishedAt();
+                default -> f.duration();
             };
         }
     }
