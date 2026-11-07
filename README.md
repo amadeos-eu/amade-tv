@@ -5,6 +5,8 @@ public broadcasters with a program guide, in a Motif/CDE-styled window. Playback
 [libmpv](https://mpv.io), embedded into the Swing window; the rest is Java on
 [amade-commons](https://github.com/amadeos-eu/amade-commons) like the other amadeOS applications.
 
+![TV with the program guide](docs/screenshots/amade-tv.png)
+
 Status: **Live, Guide, Recordings, and the first part of the Library** (search and play the
 on-demand films). Downloads, a watch-later list and following a topic follow.
 
